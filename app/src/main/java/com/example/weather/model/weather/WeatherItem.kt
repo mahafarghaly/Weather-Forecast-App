@@ -1,4 +1,4 @@
-package com.example.weather.model
+package com.example.weather.model.weather
 
 data class WeatherItem(
     val dt: Long,

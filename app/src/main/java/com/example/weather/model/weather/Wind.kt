@@ -1,4 +1,4 @@
-package com.example.weather.model
+package com.example.weather.model.weather
 
 data class Wind(
     val speed: Double,

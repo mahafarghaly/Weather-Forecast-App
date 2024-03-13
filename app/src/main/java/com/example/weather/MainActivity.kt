@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.weather.network.ApiService
-import com.example.weather.network.RetrofitHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        apiService = RetrofitHelper.apiService
+      //  apiService = RetrofitHelper.apiService
 
         // Example coordinates for Bologna, Italy
         val lat = 44.34
@@ -25,28 +24,28 @@ class MainActivity : AppCompatActivity() {
         val lang="en"
 
         // Use a coroutine to make the API call
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = apiService.getWeather(lat, lon, apiKey,units,lang)
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        // Process the response body here
-                        if (responseBody != null) {
-                            Log.d("MainActivity", "Weather data: $responseBody")
-                            // Update UI with weather data
-                        } else {
-
-                        }
-                    } else {
-                        // Handle the error
-                        Log.e("MainActivity", "Error: ${response.code()} ${response.message()}")
-                    }
-                }
-            } catch (e: Exception) {
-                // Handle the exception
-                Log.e("MainActivity", "Exception: ${e.message}")
-            }
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            try {
+//                val response = apiService.getWeather(lat, lon, apiKey,units,lang)
+//                withContext(Dispatchers.Main) {
+//                    if (response.isSuccessful) {
+//                        val responseBody = response.body()
+//                        // Process the response body here
+//                        if (responseBody != null) {
+//                            Log.d("MainActivity", "Weather data: $responseBody")
+//                            // Update UI with weather data
+//                        } else {
+//
+//                        }
+//                    } else {
+//                        // Handle the error
+//                        Log.e("MainActivity", "Error: ${response.code()} ${response.message()}")
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                // Handle the exception
+//                Log.e("MainActivity", "Exception: ${e.message}")
+//            }
+//        }
     }
 }
