@@ -1,6 +1,7 @@
 package com.example.weather.model.repo
 
 import com.example.weather.model.weather.WeatherItem
+import com.example.weather.model.weather.WeatherResponse
 import com.example.weather.network.WeatherRemoteDataSource
 
 class WeatherRepositoryImpl private constructor(
@@ -26,7 +27,7 @@ private var remoteDataSource: WeatherRemoteDataSource
         apiKey: String,
         units: String,
         lang: String
-    ): List<WeatherItem> {
-       return remoteDataSource.getWeatherOverNetwork(lat,lon,apiKey,units,lang)
+    ): WeatherResponse {
+       return remoteDataSource.getWeatherOverNetwork(lat,lon,apiKey,lang,units)
     }
 }

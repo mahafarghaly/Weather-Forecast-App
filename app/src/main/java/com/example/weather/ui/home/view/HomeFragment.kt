@@ -1,32 +1,174 @@
 package com.example.weather.ui.home.view
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.weather.R
+import com.example.weather.databinding.FragmentHomeBinding
+import com.example.weather.model.repo.WeatherRepositoryImpl
+import com.example.weather.network.WeatherRemoteDataSourceImpl
+import com.example.weather.ui.home.viewmodel.HomeViewModel
+import com.example.weather.ui.home.viewmodel.HomeViewModelFactory
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
+    private lateinit var homeFactory: HomeViewModelFactory
+    private lateinit var viewModel: HomeViewModel
+    private  val TAG = "HomeFragment"
+lateinit var binding:FragmentHomeBinding
+lateinit var dayHourAdapter: DayHourAdapter
+    private lateinit var mLayoutManager: LinearLayoutManager
+val locationRequestId=5
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
+
+        val repository = WeatherRepositoryImpl.getInstance(
+            WeatherRemoteDataSourceImpl.getInstance(),
+            //ProductsLocalDataSourceImpl.getInstance(this)
+        )
+
+        var fusedClient= LocationServices.getFusedLocationProviderClient(requireContext())
+        var locationRequest: LocationRequest = LocationRequest.
+        Builder(1000).apply {
+            setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
+        }.build()
+        var callback: LocationCallback =object : LocationCallback(){
+            override fun onLocationResult(locationResult: LocationResult) {
+                Toast.makeText(requireContext(),locationResult.lastLocation.toString(), Toast.LENGTH_SHORT).show()
+                val location=locationResult.lastLocation
+                Log.i(TAG, "latitude : ${location?.latitude}")
+                Log.i(TAG, "longtiude:${location?.longitude} ")
+                location?.let {
+                    viewModel.getWeather(it.latitude, it.longitude)
+                }
+                fusedClient.removeLocationUpdates(this)
+            }
+        }
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            ActivityCompat.requestPermissions(
+              requireActivity(),
+                arrayOf( Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                locationRequestId
+            )
+            return
+        }
+        fusedClient.requestLocationUpdates(locationRequest,callback, Looper.myLooper())
+
+
+
+
+        //*****************************************
+        homeFactory = HomeViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, homeFactory).get(HomeViewModel::class.java)
+
+        viewModel.weather.observe(this, Observer { weatherState ->
+          //  allProductsAdapter.setProductsList(products)
+            dayHourAdapter.setDayList(weatherState.list)
+
+            Log.i(TAG, "weather response:: $weatherState")
+            binding.tvCity.text=weatherState.city.name
+            binding.tvWeatherState.text=weatherState.list.get(0).weather.get(0).description.capitalizeWords()
+            binding.tvTemp.text=weatherState.list.get(0).main.temp_max.toString()
+            //binding.tvDate.text
+            val inputDate =weatherState.list.get(0).dt_txt
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+
+            try {
+                val date = inputFormat.parse(inputDate)
+
+                val outputFormat = SimpleDateFormat("EEEE,dd MMMM, HH:mm", Locale.getDefault())
+                val formattedDate = outputFormat.format(date)
+
+                binding.tvDate.text=formattedDate
+                println("Converted date: $formattedDate")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+//            Glide.with(requireContext())
+//                .load("https://openweathermap.org/img/wn/${weatherState.list[0].weather[0].icon}@2x.png")
+//                .apply(RequestOptions()
+//                    )
+//                .into(binding.ivWeather)
+
+           //  this code replace with static icon
+            val iconName = weatherState.list[0].weather[0].icon
+            val iconResourceId = getWeatherIconResourceId(iconName)
+            Glide.with(requireContext())
+                .load(iconResourceId)
+                .apply(RequestOptions()
+
+                )
+                .into(binding.ivWeather)
+
+
+        })
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ){
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf( Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                locationRequestId
+            )
+        }else{
+            var fusedClient= LocationServices.getFusedLocationProviderClient(requireContext())
+            var locationRequest:LocationRequest=LocationRequest.Builder(1000).apply {
+                setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
+            }.build()
+            var callback:LocationCallback=object :LocationCallback(){
+                override fun onLocationResult(locationResult: LocationResult) {
+                    Toast.makeText(requireContext(),locationResult.lastLocation.toString(),Toast.LENGTH_SHORT).show()
+                    val location=locationResult.lastLocation
+                    location?.let {
+                        viewModel.getWeather(it.latitude, it.longitude)
+                    }
+
+                }
+            }
+            fusedClient.requestLocationUpdates(locationRequest,callback, Looper.myLooper())
         }
     }
 
@@ -34,27 +176,27 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        binding=FragmentHomeBinding.inflate(inflater,container,false)
+        mLayoutManager  = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        binding.rvHours.layoutManager = mLayoutManager
+        dayHourAdapter = DayHourAdapter(requireContext())
+        binding.rvHours.adapter = dayHourAdapter
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    fun getWeatherIconResourceId(iconName: String): Int {
+        return when (iconName) {
+//            "01d" -> R.drawable.ic_weather_clear_sky_day
+//            "01n" -> R.drawable.ic_weather_clear_sky_night
+//            "02d" -> R.drawable.ic_weather_few_clouds_day
+            "01d" -> R.drawable.sun
+            "01n" -> R.drawable.moon
+            // Add more mappings for other icon names
+            else -> R.drawable.favorite
+        }
+    }
+
+    fun String.capitalizeWords(): String {
+        return this.split(" ").joinToString(" ") { it.capitalize() }
     }
 }

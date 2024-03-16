@@ -12,19 +12,13 @@ interface ApiService {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
-        @Query("units") units: String,//lang
+        @Query("units") units: String,
         @Query("lang") lang: String
     ): WeatherResponse
     //Response<WeatherResponse>
 
     object RetrofitHelper {
         private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
-//        private val retrofitInstance: Retrofit by lazy {
-//            Retrofit.Builder()
-//                .baseUrl(BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build()
-//        }
  val retrofitInstance= Retrofit.Builder()
     .baseUrl(BASE_URL)
     .addConverterFactory(GsonConverterFactory.create())

@@ -1,6 +1,7 @@
 package com.example.weather.network
 
 import com.example.weather.model.weather.WeatherItem
+import com.example.weather.model.weather.WeatherResponse
 
 class WeatherRemoteDataSourceImpl private constructor(): WeatherRemoteDataSource {
     private val weatherService:ApiService by lazy {
@@ -14,8 +15,8 @@ class WeatherRemoteDataSourceImpl private constructor(): WeatherRemoteDataSource
         apiKey: String,
         lang: String,
         units: String
-    ): List<WeatherItem> {
-        val response=weatherService.getWeather(lat,lon,apiKey,units,lang).list
+    ): WeatherResponse{
+        val response=weatherService.getWeather(lat,lon,apiKey,units,lang)
         return response
     }
 
