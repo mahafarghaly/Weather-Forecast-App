@@ -21,6 +21,7 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentHomeBinding
 import com.example.weather.model.repo.WeatherRepositoryImpl
 import com.example.weather.network.WeatherRemoteDataSourceImpl
+import com.example.weather.ui.favorite.MapsFragment
 import com.example.weather.ui.home.viewmodel.HomeViewModel
 import com.example.weather.ui.home.viewmodel.HomeViewModelFactory
 import com.google.android.gms.location.LocationCallback
@@ -38,7 +39,10 @@ class HomeFragment : Fragment() {
     private  val TAG = "HomeFragment"
 lateinit var binding:FragmentHomeBinding
 lateinit var dayHourAdapter: DayHourAdapter
-    private lateinit var mLayoutManager: LinearLayoutManager
+    private lateinit var layoutmanager1: LinearLayoutManager
+    private lateinit var layoutmanager2: LinearLayoutManager
+    lateinit var daysAdapter: DaysAdapter
+
 val locationRequestId=5
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,12 +98,19 @@ val locationRequestId=5
         viewModel.weather.observe(this, Observer { weatherState ->
           //  allProductsAdapter.setProductsList(products)
             dayHourAdapter.setDayList(weatherState.list)
+            daysAdapter.setDayList(weatherState.list)
 
             Log.i(TAG, "weather response:: $weatherState")
             binding.tvCity.text=weatherState.city.name
             binding.tvWeatherState.text=weatherState.list.get(0).weather.get(0).description.capitalizeWords()
-            binding.tvTemp.text=weatherState.list.get(0).main.temp_max.toString()
-            //binding.tvDate.text
+            binding.tvTemp.text=weatherState.list.get(0).main.temp_min.toInt().toString()+"°C"
+           binding.tvPressure.text=weatherState.list.get(0).main.pressure.toString()
+            binding.tvHum.text=weatherState.list.get(0).main.humidity.toString()
+            binding.tvWind.text=weatherState.list.get(0).wind.speed.toString()
+            binding.tvCloud.text=weatherState.list.get(0).clouds.all.toString()
+            binding.tvViss.text=weatherState.list.get(0).visibility.toString()
+            binding.tvSea.text=weatherState.list.get(0).main.sea_level.toString()
+            //binding.tvDate
             val inputDate =weatherState.list.get(0).dt_txt
             val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
 
@@ -177,10 +188,16 @@ val locationRequestId=5
         savedInstanceState: Bundle?
     ): View? {
         binding=FragmentHomeBinding.inflate(inflater,container,false)
-        mLayoutManager  = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        binding.rvHours.layoutManager = mLayoutManager
+        layoutmanager1  = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        binding.rvHours.layoutManager = layoutmanager1
         dayHourAdapter = DayHourAdapter(requireContext())
         binding.rvHours.adapter = dayHourAdapter
+        // list 2
+
+        layoutmanager2 = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        binding.rvDays.layoutManager = layoutmanager2
+        daysAdapter = DaysAdapter(requireContext())
+        binding.rvDays.adapter = daysAdapter
         return binding.root
     }
 
@@ -199,4 +216,5 @@ val locationRequestId=5
     fun String.capitalizeWords(): String {
         return this.split(" ").joinToString(" ") { it.capitalize() }
     }
+
 }

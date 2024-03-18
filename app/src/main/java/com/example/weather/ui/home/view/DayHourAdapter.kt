@@ -18,7 +18,7 @@ class DayHourAdapter (private val context: Context) :
     private var dayList: List<WeatherItem> = ArrayList<WeatherItem>()
 
     fun setDayList(dayList: List<WeatherItem>) {
-        this.dayList = dayList.take(8)
+        this.dayList = dayList.take(8).drop(1)
         notifyDataSetChanged()
     }
 
@@ -33,17 +33,12 @@ class DayHourAdapter (private val context: Context) :
 
        var time= day.dt_txt
             .split(" ")[1].substring(0, 5)
-        holder.binding.tvHoure.text=convertTo12HourFormat(time)
-        holder.binding.tvDTemp.text = day.main.temp_min.toString()
-//        Glide.with(context).load(currentProduct.thumbnail).into(holder.binding.ivProduct)
-//        holder.binding.btnAdd.setOnClickListener {
-//            listener.onProductClick(currentProduct)
-//        }
-
+        holder.binding.tvHoure.text=
+            convertTo12HourFormat(time)
+        holder.binding.tvDTemp.text = day.main.temp_min.toInt().toString()+"°C"
                     Glide.with(context)
                 .load("https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png")
-//                .apply(RequestOptions()
-//                    )
+
                 .into(binding.ivState)
     }
 
