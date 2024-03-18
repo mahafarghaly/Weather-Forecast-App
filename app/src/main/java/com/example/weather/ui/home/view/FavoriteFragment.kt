@@ -7,8 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.weather.R
 import com.example.weather.databinding.FragmentFavoriteBinding
-import com.example.weather.databinding.FragmentHomeBinding
-import com.example.weather.ui.favorite.MapsFragment
+import com.example.weather.ui.favorite.view.MapsFragment
 
 
 class FavoriteFragment : Fragment() {

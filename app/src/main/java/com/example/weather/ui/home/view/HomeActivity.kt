@@ -8,6 +8,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.weather.R
+import com.example.weather.dp.WeatherLocalDataSource
+import com.example.weather.dp.WeatherLocalDataSourceImpl
 import com.example.weather.model.repo.WeatherRepositoryImpl
 import com.example.weather.network.WeatherRemoteDataSourceImpl
 import com.example.weather.ui.home.viewmodel.HomeViewModel
@@ -23,7 +25,8 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
         val repository = WeatherRepositoryImpl.getInstance(
             WeatherRemoteDataSourceImpl.getInstance(),
-            // WeatherRemoteDataSourceImpl.getInstance(this)
+            WeatherLocalDataSourceImpl.getInstance(this)
+
         )
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)

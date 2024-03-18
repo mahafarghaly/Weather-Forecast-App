@@ -1,21 +1,24 @@
 package com.example.weather.model.repo
 
+import com.example.weather.dp.WeatherLocalDataSource
 import com.example.weather.model.weather.WeatherItem
 import com.example.weather.model.weather.WeatherResponse
 import com.example.weather.network.WeatherRemoteDataSource
+import kotlinx.coroutines.flow.Flow
 
 class WeatherRepositoryImpl private constructor(
-private var remoteDataSource: WeatherRemoteDataSource
+private var remoteDataSource: WeatherRemoteDataSource,
+private var localDataSource: WeatherLocalDataSource
 ):WeatherRepository {
     companion object{
         private var instance:WeatherRepositoryImpl?=null
         fun getInstance(
-            weatherRemoteDataSource: WeatherRemoteDataSource
-            //productLocalDataSource:  ProductsLocalDataSource
+            weatherRemoteDataSource: WeatherRemoteDataSource,
+            weatherLocalDataSource: WeatherLocalDataSource
         ):WeatherRepositoryImpl{
             return  instance?: synchronized(this){
                 val temp=WeatherRepositoryImpl(
-                    weatherRemoteDataSource)
+                    weatherRemoteDataSource,weatherLocalDataSource)
                 instance=temp
                 temp
             }
@@ -29,5 +32,17 @@ private var remoteDataSource: WeatherRemoteDataSource
         lang: String
     ): WeatherResponse {
        return remoteDataSource.getWeatherOverNetwork(lat,lon,apiKey,lang,units)
+    }
+
+    override suspend fun getStoredWeather(): Flow<List<WeatherItem>> {
+       return localDataSource.getStoredProducts()
+    }
+
+    override suspend fun insertWeather(weather: WeatherResponse) {
+        return localDataSource.insetWeather(weather)
+    }
+
+    override suspend fun deleteWeather(weather: WeatherResponse) {
+       return localDataSource.deleteProduct(weather)
     }
 }

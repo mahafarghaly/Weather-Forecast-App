@@ -1,4 +1,4 @@
-package com.example.weather.ui.favorite
+package com.example.weather.ui.favorite.view
 
 import android.content.res.ColorStateList
 import android.location.Geocoder

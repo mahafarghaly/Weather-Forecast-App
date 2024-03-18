@@ -19,9 +19,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.weather.R
 import com.example.weather.databinding.FragmentHomeBinding
+import com.example.weather.dp.WeatherLocalDataSourceImpl
 import com.example.weather.model.repo.WeatherRepositoryImpl
 import com.example.weather.network.WeatherRemoteDataSourceImpl
-import com.example.weather.ui.favorite.MapsFragment
 import com.example.weather.ui.home.viewmodel.HomeViewModel
 import com.example.weather.ui.home.viewmodel.HomeViewModelFactory
 import com.google.android.gms.location.LocationCallback
@@ -50,7 +50,7 @@ val locationRequestId=5
 
         val repository = WeatherRepositoryImpl.getInstance(
             WeatherRemoteDataSourceImpl.getInstance(),
-            //ProductsLocalDataSourceImpl.getInstance(this)
+           WeatherLocalDataSourceImpl.getInstance(requireContext())
         )
 
         var fusedClient= LocationServices.getFusedLocationProviderClient(requireContext())
