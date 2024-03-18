@@ -4,6 +4,9 @@ import com.example.weather.dp.WeatherLocalDataSource
 import com.example.weather.model.weather.WeatherItem
 import com.example.weather.model.weather.WeatherResponse
 import com.example.weather.network.WeatherRemoteDataSource
+import com.example.weather.utilts.APIKEY
+import com.example.weather.utilts.LANGUAGE
+import com.example.weather.utilts.UNITS
 import kotlinx.coroutines.flow.Flow
 
 class WeatherRepositoryImpl private constructor(
@@ -38,8 +41,12 @@ private var localDataSource: WeatherLocalDataSource
        return localDataSource.getStoredProducts()
     }
 
-    override suspend fun insertWeather(weather: WeatherResponse) {
-        return localDataSource.insetWeather(weather)
+    override suspend fun insertWeather(late:Double,long:Double) :WeatherResponse{
+        val weatherResponse = remoteDataSource.getWeatherOverNetwork(late,long, APIKEY, UNITS,
+            LANGUAGE)
+        localDataSource.insetWeather(weatherResponse)
+        return weatherResponse
+            // return localDataSource.insetWeather(weather)
     }
 
     override suspend fun deleteWeather(weather: WeatherResponse) {

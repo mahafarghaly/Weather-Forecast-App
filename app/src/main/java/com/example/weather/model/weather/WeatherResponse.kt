@@ -5,10 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "favorite_table")
 data class WeatherResponse(
-    @PrimaryKey val id: Int = 1,
-    val cod: String,
-    val message: Int,
-    val cnt: Int,
+    @PrimaryKey(autoGenerate = true)
+   val id: Int = 0,
     val list: List<WeatherItem>,
     val city:City
 )

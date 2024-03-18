@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel (private val _repo: WeatherRepository) : ViewModel() {
     private val _weather = MutableLiveData<WeatherResponse>()
-    //MutableLiveData<List<Product>>(emptyList())
     val weather: LiveData<WeatherResponse> get() = _weather
 
 //    init {
