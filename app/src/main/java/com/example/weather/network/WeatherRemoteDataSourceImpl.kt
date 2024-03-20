@@ -2,6 +2,8 @@ package com.example.weather.network
 
 import com.example.weather.model.weather.WeatherItem
 import com.example.weather.model.weather.WeatherResponse
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class WeatherRemoteDataSourceImpl private constructor(): WeatherRemoteDataSource {
     private val weatherService:ApiService by lazy {
@@ -15,9 +17,11 @@ class WeatherRemoteDataSourceImpl private constructor(): WeatherRemoteDataSource
         apiKey: String,
         lang: String,
         units: String
-    ): WeatherResponse{
+    ): Flow<WeatherResponse> {
         val response=weatherService.getWeather(lat,lon,apiKey,units,lang)
-        return response
+        return flow {
+          emit(response)
+        }
     }
 
     companion object{

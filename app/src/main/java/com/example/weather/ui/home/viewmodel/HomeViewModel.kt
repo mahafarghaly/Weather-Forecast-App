@@ -7,37 +7,48 @@ import androidx.lifecycle.viewModelScope
 import com.example.weather.model.repo.WeatherRepository
 import com.example.weather.model.weather.WeatherItem
 import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.network.ApiState
+import com.example.weather.utilts.APIKEY
+import com.example.weather.utilts.LANGUAGE
+import com.example.weather.utilts.UNITS
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class HomeViewModel (private val _repo: WeatherRepository) : ViewModel() {
-    private val _weather = MutableLiveData<WeatherResponse>()
-    val weather: LiveData<WeatherResponse> get() = _weather
-
-//    init {
-//        val lat = 44.34
-//        val lon = 10.99
-//        val apiKey = "5821a38d0f5b56ff77dcd5d5a0862647"
-//        val units="metric"
-//        val lang="en"
-////units=metric
-//        //imperial
-//        getWeather(lat, lon, apiKey, units, lang)
-//    }
-
-
-//    fun getWeather(lat: Double,lon: Double,apiKey: String,units: String,lang: String){
-//      viewModelScope.launch {
-//          val weatherList = _repo.getWeather(lat,lon,apiKey,units,lang)
-//          _weather.postValue(weatherList)
-//
-//      }
-//  }
+//    private val _weather = MutableLiveData<WeatherResponse>()
+//    val weather: LiveData<WeatherResponse> get() = _weather
+    private val _weather = MutableStateFlow<ApiState>(ApiState.Loading)
+    val weather = _weather.asStateFlow()
 fun getWeather(lat: Double, lon: Double) {
+//    viewModelScope.launch {
+//        val weatherList = _repo.getWeather(lat, lon, APIKEY, UNITS, LANGUAGE)
+//        _weather.postValue(weatherList)
+//    }
     viewModelScope.launch {
-        val weatherList = _repo.getWeather(lat, lon, "5821a38d0f5b56ff77dcd5d5a0862647", "metric", "en")
-        _weather.postValue(weatherList)
+        _repo.getWeather(lat, lon, APIKEY, UNITS, LANGUAGE)
+            .catch { e ->
+                _weather.value = ApiState.Failure(e)
+            }.collect { data ->
+                _weather.value = ApiState.Success(data)
+            }
+
     }
+
 }
+//    fun getWeather(lat: Double, lon: Double, isFromFavorite: Boolean = false, favWeatherResponse: WeatherResponse?=null) {
+//        viewModelScope.launch {
+//            if (isFromFavorite && favWeatherResponse != null) {
+//                // Use data from favorite location
+//                _weather.postValue(favWeatherResponse!!)
+//            } else {
+//                // Use data from current location
+//                val weatherList = _repo.getWeather(lat, lon, APIKEY, UNITS, LANGUAGE)
+//                _weather.postValue(weatherList)
+//            }
+//        }
+//    }
 
 
 }

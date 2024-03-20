@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface WeatherLocalDataSource {
     suspend fun insetWeather(weather: WeatherResponse)
     suspend fun deleteProduct(weather: WeatherResponse)
-    suspend fun getStoredProducts(): Flow<List<WeatherItem>>
+    suspend fun getStoredProducts(): Flow<List<WeatherResponse>>
 }

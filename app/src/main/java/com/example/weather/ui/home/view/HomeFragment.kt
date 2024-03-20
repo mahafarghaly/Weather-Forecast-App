@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -21,6 +22,8 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentHomeBinding
 import com.example.weather.dp.WeatherLocalDataSourceImpl
 import com.example.weather.model.repo.WeatherRepositoryImpl
+import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.network.ApiState
 import com.example.weather.network.WeatherRemoteDataSourceImpl
 import com.example.weather.ui.home.viewmodel.HomeViewModel
 import com.example.weather.ui.home.viewmodel.HomeViewModelFactory
@@ -29,6 +32,8 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -42,109 +47,64 @@ lateinit var dayHourAdapter: DayHourAdapter
     private lateinit var layoutmanager1: LinearLayoutManager
     private lateinit var layoutmanager2: LinearLayoutManager
     lateinit var daysAdapter: DaysAdapter
-
+var favWeatherResponse:WeatherResponse?=null
 val locationRequestId=5
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        favWeatherResponse = arguments?.getSerializable("weatherResponse") as? WeatherResponse
+        Log.i(TAG, "data from fav:${favWeatherResponse?.city?.coord?.lon}")
+        Log.i(TAG, "data from fav:${favWeatherResponse?.city?.coord?.lat}")
 
         val repository = WeatherRepositoryImpl.getInstance(
             WeatherRemoteDataSourceImpl.getInstance(),
            WeatherLocalDataSourceImpl.getInstance(requireContext())
         )
 
-        var fusedClient= LocationServices.getFusedLocationProviderClient(requireContext())
-        var locationRequest: LocationRequest = LocationRequest.
-        Builder(1000).apply {
-            setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
-        }.build()
-        var callback: LocationCallback =object : LocationCallback(){
-            override fun onLocationResult(locationResult: LocationResult) {
-                Toast.makeText(requireContext(),locationResult.lastLocation.toString(), Toast.LENGTH_SHORT).show()
-                val location=locationResult.lastLocation
-                Log.i(TAG, "latitude : ${location?.latitude}")
-                Log.i(TAG, "longtiude:${location?.longitude} ")
-                location?.let {
-                    viewModel.getWeather(it.latitude, it.longitude)
-                }
-                fusedClient.removeLocationUpdates(this)
-            }
-        }
-        if (ActivityCompat.checkSelfPermission(
+    var fusedClient = LocationServices.getFusedLocationProviderClient(requireContext())
+    var locationRequest: LocationRequest = LocationRequest.Builder(1000).apply {
+        setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
+    }.build()
+    var callback: LocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            Toast.makeText(
                 requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            ActivityCompat.requestPermissions(
-              requireActivity(),
-                arrayOf( Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
-                locationRequestId
-            )
-            return
-        }
-        fusedClient.requestLocationUpdates(locationRequest,callback, Looper.myLooper())
-
-
-
-
-        //*****************************************
-        homeFactory = HomeViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, homeFactory).get(HomeViewModel::class.java)
-
-        viewModel.weather.observe(this, Observer { weatherState ->
-          //  allProductsAdapter.setProductsList(products)
-            dayHourAdapter.setDayList(weatherState.list)
-            daysAdapter.setDayList(weatherState.list)
-
-            Log.i(TAG, "weather response:: $weatherState")
-            binding.tvCity.text=weatherState.city.name
-            binding.tvWeatherState.text=weatherState.list.get(0).weather.get(0).description.capitalizeWords()
-            binding.tvTemp.text=weatherState.list.get(0).main.temp_min.toInt().toString()+"°C"
-           binding.tvPressure.text=weatherState.list.get(0).main.pressure.toString()
-            binding.tvHum.text=weatherState.list.get(0).main.humidity.toString()
-            binding.tvWind.text=weatherState.list.get(0).wind.speed.toString()
-            binding.tvCloud.text=weatherState.list.get(0).clouds.all.toString()
-            binding.tvViss.text=weatherState.list.get(0).visibility.toString()
-            binding.tvSea.text=weatherState.list.get(0).main.sea_level.toString()
-            //binding.tvDate
-            val inputDate =weatherState.list.get(0).dt_txt
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-
-            try {
-                val date = inputFormat.parse(inputDate)
-
-                val outputFormat = SimpleDateFormat("EEEE,dd MMMM, HH:mm", Locale.getDefault())
-                val formattedDate = outputFormat.format(date)
-
-                binding.tvDate.text=formattedDate
-                println("Converted date: $formattedDate")
-            } catch (e: Exception) {
-                e.printStackTrace()
+                locationResult.lastLocation.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+            val location = locationResult.lastLocation
+            Log.i(TAG, "latitude : ${location?.latitude}")
+            Log.i(TAG, "longtiude:${location?.longitude} ")
+            location?.let {
+                viewModel.getWeather(it.latitude, it.longitude)
             }
-
-//            Glide.with(requireContext())
-//                .load("https://openweathermap.org/img/wn/${weatherState.list[0].weather[0].icon}@2x.png")
-//                .apply(RequestOptions()
-//                    )
-//                .into(binding.ivWeather)
-
-           //  this code replace with static icon
-            val iconName = weatherState.list[0].weather[0].icon
-            val iconResourceId = getWeatherIconResourceId(iconName)
-            Glide.with(requireContext())
-                .load(iconResourceId)
-                .apply(RequestOptions()
-
-                )
-                .into(binding.ivWeather)
-
-
-        })
+            fusedClient.removeLocationUpdates(this)
+        }
     }
+    if (ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        // TODO: Consider calling
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ),
+            locationRequestId
+        )
+        return
+    }
+    fusedClient.requestLocationUpdates(locationRequest, callback, Looper.myLooper())
+    homeFactory = HomeViewModelFactory(repository)
+    viewModel = ViewModelProvider(this, homeFactory).get(HomeViewModel::class.java)
+
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -174,7 +134,13 @@ val locationRequestId=5
                     Toast.makeText(requireContext(),locationResult.lastLocation.toString(),Toast.LENGTH_SHORT).show()
                     val location=locationResult.lastLocation
                     location?.let {
-                        viewModel.getWeather(it.latitude, it.longitude)
+
+                        if(favWeatherResponse!=null){
+                            viewModel.getWeather(favWeatherResponse!!.city.coord.lat, favWeatherResponse!!.city.coord.lon)
+                       }else{
+               viewModel.getWeather(it.latitude, it.longitude)
+                       }
+
                     }
 
                 }
@@ -198,6 +164,93 @@ val locationRequestId=5
         binding.rvDays.layoutManager = layoutmanager2
         daysAdapter = DaysAdapter(requireContext())
         binding.rvDays.adapter = daysAdapter
+        //*****************
+
+        lifecycleScope.launch {
+            viewModel.weather.collectLatest {result->
+                when(result){
+                    is ApiState.Loading -> {
+                        binding.progressBar.visibility= View.VISIBLE
+                        binding.tvCity.visibility=View.GONE
+                        binding.tvWeatherState.visibility=View.GONE
+                        binding.tvDate.visibility=View.GONE
+                        binding.ivWeather.visibility=View.GONE
+                        binding.rvHours.visibility=View.GONE
+                        binding.rvDays.visibility=View.GONE
+                        binding.cardView.visibility=View.GONE
+                        binding.tvTemp.visibility=View.GONE
+                    }
+                    is ApiState.Success->{
+                        binding.progressBar.visibility= View.GONE
+                        binding.tvCity.visibility=View.VISIBLE
+                        binding.tvWeatherState.visibility=View.VISIBLE
+                        binding.tvDate.visibility=View.VISIBLE
+                        binding.ivWeather.visibility=View.VISIBLE
+                        binding.rvHours.visibility=View.VISIBLE
+                        binding.rvDays.visibility=View.VISIBLE
+                        binding.cardView.visibility=View.VISIBLE
+                        binding.tvTemp.visibility=View.VISIBLE
+
+                        // data
+
+                        dayHourAdapter.setDayList(result.data.list)
+                        daysAdapter.setDayList(result.data.list)
+
+                        Log.i(TAG, "weather response:: ${result.data}")
+                        binding.tvCity.text = result.data.city.name
+                        binding.tvWeatherState.text =
+                            result.data.list.get(0).weather.get(0).description.capitalizeWords()
+                        binding.tvTemp.text = result.data.list.get(0).main.temp_min.toInt().toString() + "°C"
+                        binding.tvPressure.text = result.data.list.get(0).main.pressure.toString()
+                        binding.tvHum.text = result.data.list.get(0).main.humidity.toString()
+                        binding.tvWind.text = result.data.list.get(0).wind.speed.toString()
+                        binding.tvCloud.text = result.data.list.get(0).clouds.all.toString()
+                        binding.tvViss.text = result.data.list.get(0).visibility.toString()
+                        binding.tvSea.text = result.data.list.get(0).main.sea_level.toString()
+                        //binding.tvDate
+                        val inputDate = result.data.list.get(0).dt_txt
+                        val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+
+                        try {
+                            val date = inputFormat.parse(inputDate)
+
+                            val outputFormat = SimpleDateFormat("EEEE,dd MMMM, HH:mm", Locale.getDefault())
+                            val formattedDate = outputFormat.format(date)
+
+                            binding.tvDate.text = formattedDate
+                            println("Converted date: $formattedDate")
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+//            Glide.with(requireContext())
+//                .load("https://openweathermap.org/img/wn/${weatherState.list[0].weather[0].icon}@2x.png")
+//                .apply(RequestOptions()
+//                    )
+//                .into(binding.ivWeather)
+
+                        //  this code replace with static icon
+                        val iconName = result.data.list[0].weather[0].icon
+                        val iconResourceId = getWeatherIconResourceId(iconName)
+                        Glide.with(requireContext())
+                            .load(iconResourceId)
+                            .apply(
+                                RequestOptions()
+
+                            )
+                            .into(binding.ivWeather)
+
+
+                    }
+                    else->{
+                        binding.progressBar.visibility= View.GONE
+//                        Toast.makeText(
+//                            this@HomeFragment,"error",Toast.LENGTH_SHORT).show()
+
+                    }
+                }
+            }
+        }
         return binding.root
     }
 
@@ -216,5 +269,7 @@ val locationRequestId=5
     fun String.capitalizeWords(): String {
         return this.split(" ").joinToString(" ") { it.capitalize() }
     }
+
+
 
 }
