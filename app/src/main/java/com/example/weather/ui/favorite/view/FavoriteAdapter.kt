@@ -4,6 +4,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings.Global.putInt
+import android.provider.Settings.Global.putString
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
@@ -67,7 +69,7 @@ class FavoriteAdapter (private val context: Context,private val listener:OnFavCl
         holder.itemView.setOnClickListener{
             val bundle = Bundle()
             bundle.putSerializable("weatherResponse", city) // Assuming WeatherResponse implements Serializable
-
+            bundle.putString("cityName", city.city.name)
             val navController = Navigation.findNavController(holder.itemView)
             navController.navigate(R.id.homeFragment, bundle)
         }

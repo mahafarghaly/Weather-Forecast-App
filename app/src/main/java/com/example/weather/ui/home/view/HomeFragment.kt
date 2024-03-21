@@ -25,6 +25,8 @@ import com.example.weather.model.repo.WeatherRepositoryImpl
 import com.example.weather.model.weather.WeatherResponse
 import com.example.weather.network.ApiState
 import com.example.weather.network.WeatherRemoteDataSourceImpl
+import com.example.weather.ui.favorite.viewmodel.FavViewModel
+import com.example.weather.ui.favorite.viewmodel.FavViewModelFactory
 import com.example.weather.ui.home.viewmodel.HomeViewModel
 import com.example.weather.ui.home.viewmodel.HomeViewModelFactory
 import com.google.android.gms.location.LocationCallback
@@ -41,19 +43,25 @@ class HomeFragment : Fragment() {
 
     private lateinit var homeFactory: HomeViewModelFactory
     private lateinit var viewModel: HomeViewModel
+    private lateinit var favFactory: FavViewModelFactory
+    private lateinit var favViewModel: FavViewModel
     private  val TAG = "HomeFragment"
 lateinit var binding:FragmentHomeBinding
 lateinit var dayHourAdapter: DayHourAdapter
     private lateinit var layoutmanager1: LinearLayoutManager
     private lateinit var layoutmanager2: LinearLayoutManager
     lateinit var daysAdapter: DaysAdapter
-var favWeatherResponse:WeatherResponse?=null
+var weatherState:WeatherResponse?=null
+    var cityName:String?=""
+     var clickedItemIndex:Int=0
 val locationRequestId=5
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        favWeatherResponse = arguments?.getSerializable("weatherResponse") as? WeatherResponse
-        Log.i(TAG, "data from fav:${favWeatherResponse?.city?.coord?.lon}")
-        Log.i(TAG, "data from fav:${favWeatherResponse?.city?.coord?.lat}")
+        weatherState = arguments?.getSerializable("weatherResponse") as? WeatherResponse
+         clickedItemIndex = arguments?.getInt("clickedItemIndex") ?: 0
+         cityName = arguments?.getString("cityName")
+        Log.i(TAG, "data from fav:${weatherState?.city?.coord?.lon}")
+        Log.i(TAG, "data from fav:${weatherState?.city?.coord?.lat}")
 
         val repository = WeatherRepositoryImpl.getInstance(
             WeatherRemoteDataSourceImpl.getInstance(),
@@ -135,8 +143,8 @@ val locationRequestId=5
                     val location=locationResult.lastLocation
                     location?.let {
 
-                        if(favWeatherResponse!=null){
-                            viewModel.getWeather(favWeatherResponse!!.city.coord.lat, favWeatherResponse!!.city.coord.lon)
+                        if(weatherState!=null){
+                            viewModel.getWeather(weatherState!!.city.coord.lat, weatherState!!.city.coord.lon)
                        }else{
                viewModel.getWeather(it.latitude, it.longitude)
                        }
@@ -165,63 +173,45 @@ val locationRequestId=5
         daysAdapter = DaysAdapter(requireContext())
         binding.rvDays.adapter = daysAdapter
         //*****************
+        val clickedWeatherItem = weatherState?.list?.getOrNull(clickedItemIndex)
+        if(clickedWeatherItem!=null){
+            val repository = WeatherRepositoryImpl.getInstance(
+                WeatherRemoteDataSourceImpl.getInstance(),
+                WeatherLocalDataSourceImpl.getInstance(requireContext())
+            )
+            favFactory = FavViewModelFactory(repository)
+            favViewModel = ViewModelProvider(this, favFactory).get(FavViewModel::class.java)
 
-        lifecycleScope.launch {
-            viewModel.weather.collectLatest {result->
-                when(result){
-                    is ApiState.Loading -> {
-                        binding.progressBar.visibility= View.VISIBLE
-                        binding.tvCity.visibility=View.GONE
-                        binding.tvWeatherState.visibility=View.GONE
-                        binding.tvDate.visibility=View.GONE
-                        binding.ivWeather.visibility=View.GONE
-                        binding.rvHours.visibility=View.GONE
-                        binding.rvDays.visibility=View.GONE
-                        binding.cardView.visibility=View.GONE
-                        binding.tvTemp.visibility=View.GONE
-                    }
-                    is ApiState.Success->{
-                        binding.progressBar.visibility= View.GONE
-                        binding.tvCity.visibility=View.VISIBLE
-                        binding.tvWeatherState.visibility=View.VISIBLE
-                        binding.tvDate.visibility=View.VISIBLE
-                        binding.ivWeather.visibility=View.VISIBLE
-                        binding.rvHours.visibility=View.VISIBLE
-                        binding.rvDays.visibility=View.VISIBLE
-                        binding.cardView.visibility=View.VISIBLE
-                        binding.tvTemp.visibility=View.VISIBLE
+            favViewModel.weather.observe(viewLifecycleOwner, Observer { weatherState ->
+                //  allProductsAdapter.setProductsList(products)
+                dayHourAdapter.setDayList(weatherState.get(0).list)
+                daysAdapter.setDayList(weatherState.get(0).list)
 
-                        // data
+                Log.i(TAG, "weather response:: $weatherState")
+                binding.tvCity.text=cityName
+                binding.tvWeatherState.text=clickedWeatherItem.weather.get(0).description.capitalizeWords()
+                binding.tvTemp.text=clickedWeatherItem.main.temp_min.toInt().toString()+"°C"
+                binding.tvPressure.text=clickedWeatherItem.main.pressure.toString()
+                binding.tvHum.text=clickedWeatherItem.main.humidity.toString()
+                binding.tvWind.text=clickedWeatherItem.wind.speed.toString()
+                binding.tvCloud.text=clickedWeatherItem.clouds.all.toString()
+                binding.tvViss.text=clickedWeatherItem.visibility.toString()
+                binding.tvSea.text=clickedWeatherItem.main.sea_level.toString()
+                binding.tvDate
+                val inputDate =clickedWeatherItem.dt_txt
+                val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
 
-                        dayHourAdapter.setDayList(result.data.list)
-                        daysAdapter.setDayList(result.data.list)
+                try {
+                    val date = inputFormat.parse(inputDate)
 
-                        Log.i(TAG, "weather response:: ${result.data}")
-                        binding.tvCity.text = result.data.city.name
-                        binding.tvWeatherState.text =
-                            result.data.list.get(0).weather.get(0).description.capitalizeWords()
-                        binding.tvTemp.text = result.data.list.get(0).main.temp_min.toInt().toString() + "°C"
-                        binding.tvPressure.text = result.data.list.get(0).main.pressure.toString()
-                        binding.tvHum.text = result.data.list.get(0).main.humidity.toString()
-                        binding.tvWind.text = result.data.list.get(0).wind.speed.toString()
-                        binding.tvCloud.text = result.data.list.get(0).clouds.all.toString()
-                        binding.tvViss.text = result.data.list.get(0).visibility.toString()
-                        binding.tvSea.text = result.data.list.get(0).main.sea_level.toString()
-                        //binding.tvDate
-                        val inputDate = result.data.list.get(0).dt_txt
-                        val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                    val outputFormat = SimpleDateFormat("EEEE,dd MMMM, HH:mm", Locale.getDefault())
+                    val formattedDate = outputFormat.format(date)
 
-                        try {
-                            val date = inputFormat.parse(inputDate)
-
-                            val outputFormat = SimpleDateFormat("EEEE,dd MMMM, HH:mm", Locale.getDefault())
-                            val formattedDate = outputFormat.format(date)
-
-                            binding.tvDate.text = formattedDate
-                            println("Converted date: $formattedDate")
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                    binding.tvDate.text=formattedDate
+                    println("Converted date: $formattedDate")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
 
 //            Glide.with(requireContext())
 //                .load("https://openweathermap.org/img/wn/${weatherState.list[0].weather[0].icon}@2x.png")
@@ -229,28 +219,112 @@ val locationRequestId=5
 //                    )
 //                .into(binding.ivWeather)
 
-                        //  this code replace with static icon
-                        val iconName = result.data.list[0].weather[0].icon
-                        val iconResourceId = getWeatherIconResourceId(iconName)
-                        Glide.with(requireContext())
-                            .load(iconResourceId)
-                            .apply(
-                                RequestOptions()
+                //  this code replace with static icon
+                val iconName = clickedWeatherItem.weather[0].icon
+                val iconResourceId = getWeatherIconResourceId(iconName)
+                Glide.with(requireContext())
+                    .load(iconResourceId)
+                    .apply(RequestOptions()
 
-                            )
-                            .into(binding.ivWeather)
+                    )
+                    .into(binding.ivWeather)
 
 
-                    }
-                    else->{
-                        binding.progressBar.visibility= View.GONE
+            })
+        }else {
+            lifecycleScope.launch {
+                viewModel.weather.collectLatest { result ->
+                    when (result) {
+                        is ApiState.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                            binding.tvCity.visibility = View.GONE
+                            binding.tvWeatherState.visibility = View.GONE
+                            binding.tvDate.visibility = View.GONE
+                            binding.ivWeather.visibility = View.GONE
+                            binding.rvHours.visibility = View.GONE
+                            binding.rvDays.visibility = View.GONE
+                            binding.cardView.visibility = View.GONE
+                            binding.tvTemp.visibility = View.GONE
+                        }
+
+                        is ApiState.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.tvCity.visibility = View.VISIBLE
+                            binding.tvWeatherState.visibility = View.VISIBLE
+                            binding.tvDate.visibility = View.VISIBLE
+                            binding.ivWeather.visibility = View.VISIBLE
+                            binding.rvHours.visibility = View.VISIBLE
+                            binding.rvDays.visibility = View.VISIBLE
+                            binding.cardView.visibility = View.VISIBLE
+                            binding.tvTemp.visibility = View.VISIBLE
+
+                            // data
+
+                            dayHourAdapter.setDayList(result.data.list)
+                            daysAdapter.setDayList(result.data.list)
+
+                            Log.i(TAG, "weather response:: ${result.data}")
+                            binding.tvCity.text = result.data.city.name
+                            binding.tvWeatherState.text =
+                                result.data.list.get(0).weather.get(0).description.capitalizeWords()
+                            binding.tvTemp.text =
+                                result.data.list.get(0).main.temp_min.toInt().toString() + "°C"
+                            binding.tvPressure.text =
+                                result.data.list.get(0).main.pressure.toString()
+                            binding.tvHum.text = result.data.list.get(0).main.humidity.toString()
+                            binding.tvWind.text = result.data.list.get(0).wind.speed.toString()
+                            binding.tvCloud.text = result.data.list.get(0).clouds.all.toString()
+                            binding.tvViss.text = result.data.list.get(0).visibility.toString()
+                            binding.tvSea.text = result.data.list.get(0).main.sea_level.toString()
+                            //binding.tvDate
+                            val inputDate = result.data.list.get(0).dt_txt
+                            val inputFormat =
+                                SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+
+                            try {
+                                val date = inputFormat.parse(inputDate)
+
+                                val outputFormat =
+                                    SimpleDateFormat("EEEE,dd MMMM, HH:mm", Locale.getDefault())
+                                val formattedDate = outputFormat.format(date)
+
+                                binding.tvDate.text = formattedDate
+                                println("Converted date: $formattedDate")
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+
+//            Glide.with(requireContext())
+//                .load("https://openweathermap.org/img/wn/${weatherState.list[0].weather[0].icon}@2x.png")
+//                .apply(RequestOptions()
+//                    )
+//                .into(binding.ivWeather)
+
+                            //  this code replace with static icon
+                            val iconName = result.data.list[0].weather[0].icon
+                            val iconResourceId = getWeatherIconResourceId(iconName)
+                            Glide.with(requireContext())
+                                .load(iconResourceId)
+                                .apply(
+                                    RequestOptions()
+
+                                )
+                                .into(binding.ivWeather)
+
+
+                        }
+
+                        else -> {
+                            binding.progressBar.visibility = View.GONE
 //                        Toast.makeText(
 //                            this@HomeFragment,"error",Toast.LENGTH_SHORT).show()
 
+                        }
                     }
                 }
             }
         }
+
         return binding.root
     }
 
@@ -270,6 +344,9 @@ val locationRequestId=5
         return this.split(" ").joinToString(" ") { it.capitalize() }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+    }
 
 }
