@@ -66,7 +66,7 @@ class WeatherLocalDataSourceTest
 
         // When
         dataSource.insetWeather(weatherResponse)
-        val storedWeatherList = dataSource.getStoredProducts().first()
+        val storedWeatherList = dataSource.getStoredWeather().first()
 
         // Then
         assertThat(storedWeatherList.size, `is`(1))
@@ -88,7 +88,7 @@ class WeatherLocalDataSourceTest
         // When
         dataSource.insetWeather(weatherResponse)
         dataSource.deleteProduct(weatherResponse)
-        val storedWeatherList = dataSource.getStoredProducts().first()
+        val storedWeatherList = dataSource.getStoredWeather().first()
 
         // Then
         assertThat(storedWeatherList.isEmpty(), `is`(true))

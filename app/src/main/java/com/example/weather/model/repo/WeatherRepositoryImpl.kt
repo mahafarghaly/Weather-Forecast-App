@@ -6,6 +6,7 @@ import com.example.weather.network.WeatherRemoteDataSource
 import com.example.weather.utils.APIKEY
 import com.example.weather.utils.LANGUAGE
 import com.example.weather.utils.UNITS
+import com.example.weather.utils.getLanguageLocale
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
@@ -38,12 +39,13 @@ private var localDataSource: WeatherLocalDataSource
     }
 
     override suspend fun getStoredWeather(): Flow<List<WeatherResponse>> {
-       return localDataSource.getStoredProducts()
+       return localDataSource.getStoredWeather()
     }
 
     override suspend fun insertWeather(late:Double,long:Double) :WeatherResponse{
         val weatherResponse = remoteDataSource.getWeatherOverNetwork(late,long, APIKEY, UNITS,
-            LANGUAGE)
+            getLanguageLocale()
+        )
             .first()
         localDataSource.insetWeather(weatherResponse)
         return weatherResponse

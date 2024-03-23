@@ -35,7 +35,6 @@ fun TextView.setTemp(temp: Int, context: Context) {
     }
 }
 
-
 fun TextView.setWindSpeed(windSpeed: Double, application: Application) {
     val preferences = SettingSharedPreferences.getInstance(application)
     when (preferences.getWindSpeedPref()) {
@@ -50,7 +49,6 @@ fun TextView.setWindSpeed(windSpeed: Double, application: Application) {
         }
     }
 }
-
 fun getWindSpeedInMilesPerHour(windSpeed: Double): Double {
     return windSpeed * 2.23694
 }

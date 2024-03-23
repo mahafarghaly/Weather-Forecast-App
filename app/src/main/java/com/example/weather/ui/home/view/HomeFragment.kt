@@ -190,6 +190,7 @@ class HomeFragment : Fragment() {
         val clickedWeatherItem = weatherState?.list?.getOrNull(clickedItemIndex)
 
         if (clickedWeatherItem != null) {
+            binding.progressBar.visibility = View.GONE
             val repository = WeatherRepositoryImpl.getInstance(
                 WeatherRemoteDataSourceImpl.getInstance(),
                 WeatherLocalDataSourceImpl.getInstance(requireContext())
@@ -202,7 +203,7 @@ class HomeFragment : Fragment() {
                 dayHourAdapter.setDayList(weatherState.get(0).list)
                 daysAdapter.setDayList(weatherState.get(0).list)
 
-                binding.progressBar.visibility = View.GONE
+
                 binding.tvCity.text = cityName
                 binding.tvWeatherState.text =
                     clickedWeatherItem.weather.get(0).description.capitalizeWords()

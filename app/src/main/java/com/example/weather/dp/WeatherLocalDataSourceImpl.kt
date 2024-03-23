@@ -28,7 +28,7 @@ class WeatherLocalDataSourceImpl (context: Context):WeatherLocalDataSource  {
         dao.delete(weather)
     }
 
-    override suspend fun getStoredProducts(): Flow<List<WeatherResponse>> {
+    override suspend fun getStoredWeather(): Flow<List<WeatherResponse>> {
       return dao.getFavWeather()
     }
 }

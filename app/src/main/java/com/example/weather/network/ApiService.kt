@@ -15,7 +15,6 @@ interface ApiService {
         @Query("units") units: String,
         @Query("lang") lang: String
     ): WeatherResponse
-    //Response<WeatherResponse>
 
     object RetrofitHelper {
         private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
