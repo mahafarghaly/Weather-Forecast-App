@@ -1,5 +1,32 @@
 <resources>
     <string name="app_name">Weather</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="english">English</string>
+    <string name="gps">GPS</string>
+    <string name="map">MAP</string>
+    <string name="temperature">Temp</string>
+    <string name="location">Location\n</string>
+    <string name="language">Language\n</string>
+    <string name="wind_speed">Wind</string>
+    <string name="arabic">Arabic</string>
+    <string name="c_symbol">°C</string>
+    <string name="k_symbol">°K</string>
+    <string name="f_symbol">°F</string>
+    <string name="meter_per_second">m/s</string>
+    <string name="mile_per_hour">mph</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind">Wind</string>
+    <string name="cloud">Clouds</string>
+    <string name="sea_level">Sea level</string>
+    <string name="visibility">Visibility</string>
+    <string name="home">Home</string>
+    <string name="favorite">Favorite</string>
+    <string name="alert">Alert</string>
+    <string name="settings">Settings</string>
+    <string name="celsius">celsius</string>
+    <string name="kelvin">kelvin</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="meterpersecond">m/s</string>
+    <string name="milePerHour">ml/hour</string>
 </resources>

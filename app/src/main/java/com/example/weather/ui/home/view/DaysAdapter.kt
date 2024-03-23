@@ -5,11 +5,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.weather.databinding.DayItemBinding
 import com.example.weather.databinding.HourItemBinding
 import com.example.weather.model.weather.WeatherItem
+import com.example.weather.utils.getWeatherIconResourceId
+import com.example.weather.utils.units.setTemp
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.math.roundToInt
 
 class DaysAdapter(private val context: Context) :
     RecyclerView.Adapter<DaysAdapter.ViewHolder>() {
@@ -57,9 +61,22 @@ fun setDayList(dayList: List<WeatherItem>) {
         holder.binding.tvDayName.text = dayName
         holder.binding.tvWeatherState.text = day.weather[0].description
             //day.main.temp_min.toInt().toString()+"°C"
-        Glide.with(context)
-            .load("https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png")
+        holder.binding.tvTempDay.setTemp(
+            day.main.temp_min.roundToInt(),
+            holder.itemView.context
+        )
 
+//        Glide.with(context)
+//            .load("https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png")
+//
+//            .into(binding.ivDayState)
+        val icon= getWeatherIconResourceId(day.weather[0].icon)
+        Glide.with(  holder.itemView.context)
+            .load(icon)
+            .apply(
+                RequestOptions()
+
+            )
             .into(binding.ivDayState)
     }
 

@@ -1,16 +1,12 @@
 package com.example.weather.ui.home.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather.model.repo.WeatherRepository
-import com.example.weather.model.weather.WeatherItem
-import com.example.weather.model.weather.WeatherResponse
 import com.example.weather.network.ApiState
-import com.example.weather.utilts.APIKEY
-import com.example.weather.utilts.LANGUAGE
-import com.example.weather.utilts.UNITS
+import com.example.weather.utils.APIKEY
+import com.example.weather.utils.LANGUAGE
+import com.example.weather.utils.UNITS
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch

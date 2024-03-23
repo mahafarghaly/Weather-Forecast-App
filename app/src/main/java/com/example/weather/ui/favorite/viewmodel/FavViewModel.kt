@@ -6,9 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather.model.repo.WeatherRepository
 import com.example.weather.model.weather.WeatherResponse
-import com.example.weather.utilts.APIKEY
-import com.example.weather.utilts.LANGUAGE
-import com.example.weather.utilts.UNITS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

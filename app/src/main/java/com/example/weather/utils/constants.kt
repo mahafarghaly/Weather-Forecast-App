@@ -1,4 +1,4 @@
-package com.example.weather.utilts
+package com.example.weather.utils
 
 val APIKEY:String="5821a38d0f5b56ff77dcd5d5a0862647"
 val UNITS:String="metric"

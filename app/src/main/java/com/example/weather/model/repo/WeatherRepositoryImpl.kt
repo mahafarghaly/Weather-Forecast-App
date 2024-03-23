@@ -1,12 +1,11 @@
 package com.example.weather.model.repo
 
 import com.example.weather.dp.WeatherLocalDataSource
-import com.example.weather.model.weather.WeatherItem
 import com.example.weather.model.weather.WeatherResponse
 import com.example.weather.network.WeatherRemoteDataSource
-import com.example.weather.utilts.APIKEY
-import com.example.weather.utilts.LANGUAGE
-import com.example.weather.utilts.UNITS
+import com.example.weather.utils.APIKEY
+import com.example.weather.utils.LANGUAGE
+import com.example.weather.utils.UNITS
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 

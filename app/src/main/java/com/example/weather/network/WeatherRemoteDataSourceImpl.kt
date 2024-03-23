@@ -2,6 +2,7 @@ package com.example.weather.network
 
 import com.example.weather.model.weather.WeatherItem
 import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.utils.getLanguageLocale
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -18,7 +19,7 @@ class WeatherRemoteDataSourceImpl private constructor(): WeatherRemoteDataSource
         lang: String,
         units: String
     ): Flow<WeatherResponse> {
-        val response=weatherService.getWeather(lat,lon,apiKey,units,lang)
+        val response=weatherService.getWeather(lat,lon,apiKey,units,getLanguageLocale())
         return flow {
           emit(response)
         }

@@ -46,7 +46,7 @@
             android:layout_width="172dp"
             android:layout_height="139dp"
             android:layout_marginTop="18dp"
-            android:src="@drawable/fewdayclouds"
+            android:src="@drawable/dfewclouds"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_weatherState" />
@@ -120,7 +120,7 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="16dp"
-                    android:src="@drawable/fewdayclouds"
+                    android:src="@drawable/dfewclouds"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -154,7 +154,7 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="50dp"
                     android:layout_marginTop="16dp"
-                    android:src="@drawable/fewdayclouds"
+                    android:src="@drawable/dfewclouds"
                     app:layout_constraintEnd_toStartOf="@+id/iv_wind"
                     app:layout_constraintHorizontal_bias="0.312"
                     app:layout_constraintStart_toEndOf="@+id/iv_pressure"
@@ -179,7 +179,7 @@
 
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="20dp"
-                    android:src="@drawable/fewdayclouds"
+                    android:src="@drawable/dfewclouds"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -190,7 +190,7 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="28dp"
-                    android:src="@drawable/fewdayclouds"
+                    android:src="@drawable/dfewclouds"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_pressure" />
 
@@ -229,7 +229,7 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="50dp"
                     android:layout_marginTop="28dp"
-                    android:src="@drawable/fewdayclouds"
+                    android:src="@drawable/dfewclouds"
                     app:layout_constraintEnd_toStartOf="@+id/iv_wind"
                     app:layout_constraintHorizontal_bias="0.214"
                     app:layout_constraintStart_toEndOf="@+id/iv_pressure"
@@ -242,7 +242,7 @@
 
                     android:layout_marginTop="28dp"
                     android:layout_marginEnd="20dp"
-                    android:src="@drawable/fewdayclouds"
+                    android:src="@drawable/dfewclouds"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_wind" />
 
@@ -262,7 +262,7 @@
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pressure"
+                    android:text="@string/pressure"
                     app:layout_constraintEnd_toEndOf="@+id/tv_pressure"
                     app:layout_constraintStart_toStartOf="@+id/tv_pressure"
                     app:layout_constraintTop_toBottomOf="@+id/tv_pressure" />
@@ -271,7 +271,7 @@
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Humidity"
+                    android:text="@string/humidity"
                     app:layout_constraintEnd_toEndOf="@+id/tv_hum"
                     app:layout_constraintStart_toStartOf="@+id/tv_hum"
                     app:layout_constraintTop_toBottomOf="@+id/tv_hum" />
@@ -280,7 +280,7 @@
                     android:id="@+id/textView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Wind"
+                    android:text="@string/wind"
                     app:layout_constraintEnd_toEndOf="@+id/tv_wind"
                     app:layout_constraintStart_toStartOf="@+id/tv_wind"
                     app:layout_constraintTop_toBottomOf="@+id/tv_wind" />
@@ -289,7 +289,7 @@
                     android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cloud"
+                    android:text="@string/cloud"
                     app:layout_constraintEnd_toEndOf="@+id/tv_cloud"
                     app:layout_constraintStart_toStartOf="@+id/tv_cloud"
                     app:layout_constraintTop_toBottomOf="@+id/tv_cloud" />
@@ -298,7 +298,7 @@
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sea level"
+                    android:text="@string/sea_level"
                     app:layout_constraintEnd_toEndOf="@+id/tv_sea"
                     app:layout_constraintStart_toStartOf="@+id/tv_sea"
                     app:layout_constraintTop_toBottomOf="@+id/tv_sea" />
@@ -307,7 +307,7 @@
                     android:id="@+id/textView7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Visibility"
+                    android:text="@string/visibility"
                     app:layout_constraintEnd_toEndOf="@+id/tv_viss"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/tv_viss"

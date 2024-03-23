@@ -3,14 +3,19 @@ package com.example.weather.ui.home.view
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.weather.databinding.HourItemBinding
 import com.example.weather.model.weather.WeatherItem
+import com.example.weather.utils.getWeatherIconResourceId
+import com.example.weather.utils.units.setTemp
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.math.roundToInt
 
 class DayHourAdapter (private val context: Context) :
     RecyclerView.Adapter<DayHourAdapter.ViewHolder>() {
@@ -35,11 +40,22 @@ class DayHourAdapter (private val context: Context) :
             .split(" ")[1].substring(0, 5)
         holder.binding.tvHoure.text=
             convertTo12HourFormat(time)
-        holder.binding.tvDTemp.text = day.main.temp_min.toInt().toString()+"°C"
-                    Glide.with(context)
-                .load("https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png")
+        holder.binding.tvDTemp.setTemp(
+            day.main.temp_min.roundToInt(),
+            holder.itemView.context
+        )
+//                    Glide.with(context)
+//                .load("https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png")
+//
+//                .into(binding.ivState)
+        val icon= getWeatherIconResourceId(day.weather[0].icon)
+        Glide.with(  holder.itemView.context)
+            .load(icon)
+            .apply(
+                RequestOptions()
 
-                .into(binding.ivState)
+            )
+            .into(binding.ivState)
     }
 
     override fun getItemCount(): Int {
