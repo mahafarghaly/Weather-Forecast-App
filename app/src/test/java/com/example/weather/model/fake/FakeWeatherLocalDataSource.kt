@@ -1,7 +1,7 @@
 package com.example.weather.model.fake
 
 import com.example.weather.dp.WeatherLocalDataSource
-import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.model.entity.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -12,7 +12,7 @@ class FakeWeatherLocalDataSource : WeatherLocalDataSource {
         weatherList.add(weather)
     }
 
-    override suspend fun deleteProduct(weather: WeatherResponse) {
+    override suspend fun deleteWeather(weather: WeatherResponse) {
         weatherList.remove(weather)
     }
 

@@ -29,4 +29,11 @@
     <string name="kelvin">كلفن</string>
     <string name="meterpersecond">متر في الثانية</string>
     <string name="milePerHour">ميل في الساعة</string>
+    <string name="places_cancel">Cancel</string>
+    <string name="from">From\n</string>
+    <string name="to">To</string>
+    <string name="alarm">Alarm\n</string>
+    <string name="notification">Notification</string>
+    <string name="save">Save</string>
+    <string name="set_alarm">Set Alarm</string>
 </resources>

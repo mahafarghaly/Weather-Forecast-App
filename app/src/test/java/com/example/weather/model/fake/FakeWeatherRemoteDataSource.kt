@@ -7,7 +7,7 @@ import com.example.weather.model.weather.Main
 import com.example.weather.model.weather.Sys
 import com.example.weather.model.weather.Weather
 import com.example.weather.model.weather.WeatherItem
-import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.model.entity.WeatherResponse
 import com.example.weather.model.weather.Wind
 import com.example.weather.network.WeatherRemoteDataSource
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +16,8 @@ import kotlinx.coroutines.flow.flow
 class FakeWeatherRemoteDataSource  : WeatherRemoteDataSource {
     override suspend fun getWeatherOverNetwork(lat: Double, lon: Double, apiKey: String, units: String, lang: String): Flow<WeatherResponse> {
         return flow {
-            emit(WeatherResponse(
+            emit(
+                WeatherResponse(
                 city = City("Alex", "EG", Coord(40.7128, -74.0060)),
                 list = listOf(
                     WeatherItem(
@@ -31,7 +32,8 @@ class FakeWeatherRemoteDataSource  : WeatherRemoteDataSource {
                         dt_txt = "3-23-2024 04.00"
                     )
                 )
-            ))
+            )
+            )
         }
     }
 }

@@ -15,12 +15,11 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentFavoriteBinding
 import com.example.weather.dp.WeatherLocalDataSourceImpl
 import com.example.weather.model.repo.WeatherRepositoryImpl
-import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.model.entity.WeatherResponse
 import com.example.weather.network.WeatherRemoteDataSourceImpl
 import com.example.weather.ui.favorite.viewmodel.FavViewModel
 import com.example.weather.ui.favorite.viewmodel.FavViewModelFactory
-import com.example.weather.ui.home.viewmodel.HomeViewModel
-import com.example.weather.ui.home.viewmodel.HomeViewModelFactory
+import com.example.weather.utils.openMapView
 
 
 class FavoriteFragment : Fragment(),OnFavClickListener {
@@ -55,7 +54,7 @@ class FavoriteFragment : Fragment(),OnFavClickListener {
     ): View? {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         binding.floatingActionButton.setOnClickListener {
-            openMapView(-34.0, 151.0)
+            openMapView(requireActivity().supportFragmentManager,"favorite",-34.0, 151.0)
         }
         layoutManager= LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false)
        binding.rvFavorite.layoutManager=layoutManager
@@ -66,18 +65,18 @@ class FavoriteFragment : Fragment(),OnFavClickListener {
     }
 
 
-    private fun openMapView(long: Double, land: Double) {
-        val fragment = MapsFragment().apply {
-            arguments = Bundle().apply {
-                putDouble("long", long)
-                putDouble("land", land)
-            }
-        }
-        requireActivity().supportFragmentManager.beginTransaction()
-        .replace(R.id.fragment_container, fragment)
-        .addToBackStack(null)
-        .commit()
-    }
+//    private fun openMapView(long: Double, land: Double) {
+//        val fragment = MapsFragment().apply {
+//            arguments = Bundle().apply {
+//                putDouble("long", long)
+//                putDouble("land", land)
+//            }
+//        }
+//        requireActivity().supportFragmentManager.beginTransaction()
+//        .replace(R.id.fragment_container, fragment)
+//        .addToBackStack(null)
+//        .commit()
+//    }
 
     override fun onFavClick(fav: WeatherResponse?) {
         fav?.let { favViewMode.deleteFav(it) }

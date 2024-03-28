@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather.model.repo.WeatherRepository
-import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.model.entity.WeatherResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -18,15 +18,6 @@ init {
 }
 
     fun addFav(lat: Double, lon: Double) {
-//        viewModelScope.launch {
-//            try {
-//                val weatherResponse = _repo.insertWeather(lat,lon)
-//                _weather.postValue(weatherResponse)
-//            } catch (e: Exception) {
-//
-//                println(e)
-//            }
-//        }
         viewModelScope.launch {
             try {
                 _repo.insertWeather(lat, lon)

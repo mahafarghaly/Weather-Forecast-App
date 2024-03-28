@@ -9,20 +9,13 @@ import com.example.weather.model.weather.Main
 import com.example.weather.model.weather.Sys
 import com.example.weather.model.weather.Weather
 import com.example.weather.model.weather.WeatherItem
-import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.model.entity.WeatherResponse
 import com.example.weather.model.weather.Wind
-import com.example.weather.utils.APIKEY
-import com.example.weather.utils.LANGUAGE
-import com.example.weather.utils.UNITS
-import com.example.weather.utils.getLanguageLocale
-import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertNotNull
-import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.Is
 import org.junit.Before
 import org.junit.Test
 

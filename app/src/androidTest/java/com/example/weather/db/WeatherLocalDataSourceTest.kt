@@ -14,7 +14,7 @@ import com.example.weather.model.weather.Main
 import com.example.weather.model.weather.Sys
 import com.example.weather.model.weather.Weather
 import com.example.weather.model.weather.WeatherItem
-import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.model.entity.WeatherResponse
 import com.example.weather.model.weather.Wind
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -87,7 +87,7 @@ class WeatherLocalDataSourceTest
 
         // When
         dataSource.insetWeather(weatherResponse)
-        dataSource.deleteProduct(weatherResponse)
+        dataSource.deleteWeather(weatherResponse)
         val storedWeatherList = dataSource.getStoredWeather().first()
 
         // Then

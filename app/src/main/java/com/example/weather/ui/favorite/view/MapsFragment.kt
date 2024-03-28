@@ -9,22 +9,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.weather.R
 import com.example.weather.databinding.FragmentMapsBinding
 import com.example.weather.dp.WeatherLocalDataSourceImpl
-import com.example.weather.model.repo.WeatherRepository
 import com.example.weather.model.repo.WeatherRepositoryImpl
 import com.example.weather.network.WeatherRemoteDataSourceImpl
 import com.example.weather.ui.favorite.viewmodel.FavViewModel
 import com.example.weather.ui.favorite.viewmodel.FavViewModelFactory
-import com.example.weather.ui.home.viewmodel.HomeViewModel
-import com.example.weather.ui.home.viewmodel.HomeViewModelFactory
+import com.example.weather.ui.notifications.view.NotificationsFragment
+import com.example.weather.ui.notifications.viewmodel.NotificationViewModel
+import com.example.weather.ui.notifications.viewmodel.NotificationViewModelFactory
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -37,16 +33,17 @@ import java.util.Locale
 
 class MapsFragment : Fragment() {
     private lateinit var map: GoogleMap
-
     private lateinit var binding: FragmentMapsBinding
     private  val TAG = "MapsFragment"
     private var isSnackbarShown: Boolean = false
     private lateinit var snackbar: Snackbar
     private lateinit var favFactory: FavViewModelFactory
-    private lateinit var viewModel: FavViewModel
+    private lateinit var favViewModel: FavViewModel
+    lateinit var alarmViewModel:NotificationViewModel
+    lateinit var alarmFactory:NotificationViewModelFactory
      var latitude:Double=0.0
     var longitude:Double=0.0
-
+    private var selectedTime: Long = 0L
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
         map.uiSettings.isZoomControlsEnabled = true
@@ -68,7 +65,9 @@ class MapsFragment : Fragment() {
             WeatherLocalDataSourceImpl.getInstance(requireContext())
         )
         favFactory = FavViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, favFactory).get(FavViewModel::class.java)
+        favViewModel = ViewModelProvider(this, favFactory).get(FavViewModel::class.java)
+        alarmFactory = NotificationViewModelFactory(repository)
+        alarmViewModel = ViewModelProvider(this, alarmFactory).get(NotificationViewModel::class.java)
 
         binding.searchButton.setOnClickListener {
             val locationName = binding.searchEditText.text.toString()
@@ -89,6 +88,10 @@ class MapsFragment : Fragment() {
                 }
 
         }
+//        val selectedTime = arguments?.getLong("time", 0L) ?: ""
+//        Log.i(TAG, "onCreateView: time=$selectedTime")
+        selectedTime = arguments?.getLong("time", 0L) ?: 0L  // Initialize selectedTime
+        Log.i(TAG, "onCreateView: time=$selectedTime")
         return binding.root
     }
 
@@ -112,15 +115,28 @@ class MapsFragment : Fragment() {
                 Snackbar.LENGTH_INDEFINITE
             )
             snackbar.setAction("Save") {
+        if(selectedTime==0L) {
+            favViewModel.addFav(latitude, longitude)
+            isSnackbarShown = false
+            snackbar.dismiss()
+            val favoriteFragment = FavoriteFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, favoriteFragment)
+                .addToBackStack(null)
+                .commit()
+        }else{
 
-                viewModel.addFav(latitude,longitude)
-                isSnackbarShown = false
-                snackbar.dismiss()
-                val favoriteFragment = FavoriteFragment()
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, favoriteFragment)
-                    .addToBackStack(null)
-                    .commit()
+            alarmViewModel.addAlarm(latitude, longitude,selectedTime)
+            isSnackbarShown = false
+            snackbar.dismiss()
+            val alarmFragment = NotificationsFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, alarmFragment)
+                .addToBackStack(null)
+                .commit()
+            // from
+        }
+
 
             }
             snackbar.view.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.colorPrimaryLight))
@@ -128,12 +144,6 @@ class MapsFragment : Fragment() {
             isSnackbarShown = true
         }
     }
-//    private fun saveLocationToRoom() {
-//        val locationName = binding.searchEditText.text.toString()
-//        val latLng = LatLng(addresses[0].latitude, addresses[0].longitude)
-//        val city = City(name = locationName, lat = latLng.latitude, lon = latLng.longitude)
-//        viewModel.addFav(city)
-//    }
 
 }
 

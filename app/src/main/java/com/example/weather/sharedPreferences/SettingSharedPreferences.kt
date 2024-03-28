@@ -70,8 +70,6 @@ class SettingSharedPreferences private constructor(applicationContext: Context) 
         const val FAHRENHEIT = "FAHRENHEIT"
 
         const val SET_LOCATION_AS_MAIN_LOCATION = "SET_LOCATION_AS_MAIN_LOCATION"
-        const val ADD_T0_FAV_IN_THIS_LOCATION = "ADD_T0_FAV_IN_THIS_LOCATION"
-        const val ADD_T0_ALERTS_IN_THIS_LOCATION = "ADD_T0_ALERTS_IN_THIS_LOCATION"
         const val NAVIGATE_TO_MAP = "NAVIGATE_TO_MAP"
 
         private lateinit var instance: SettingSharedPreferences

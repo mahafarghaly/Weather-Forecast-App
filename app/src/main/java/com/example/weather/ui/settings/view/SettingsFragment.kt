@@ -1,4 +1,4 @@
-package com.example.weather.ui.home.view
+package com.example.weather.ui.settings.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,10 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
 import com.example.weather.R
 import com.example.weather.databinding.FragmentSettingsBinding
+import com.example.weather.ui.home.view.HomeActivity
 import com.example.weather.utils.changeLanguageLocaleTo
 import com.example.weather.utils.getLanguageLocale
 import com.mad.iti.weather.sharedPreferences.SettingSharedPreferences

@@ -1,14 +1,18 @@
 package com.example.weather.dp
 
 import android.content.Context
-import com.example.weather.model.weather.WeatherItem
-import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.model.entity.AlarmEntity
+import com.example.weather.model.entity.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 
 class WeatherLocalDataSourceImpl (context: Context):WeatherLocalDataSource  {
     private  val dao:WeatherDAO by lazy {
         val db:WeatherDataBase=WeatherDataBase.getInstance(context)
         db.getWeatherDao()
+    }
+    private  val alarmDao:AlarmDAO by lazy {
+        val db:WeatherDataBase=WeatherDataBase.getInstance(context)
+        db.getAlarmDao()
     }
     companion object{
         private var instance: WeatherLocalDataSourceImpl?=null
@@ -24,11 +28,23 @@ class WeatherLocalDataSourceImpl (context: Context):WeatherLocalDataSource  {
         dao.insertWeather(weather)
     }
 
-    override suspend fun deleteProduct(weather: WeatherResponse) {
+    override suspend fun deleteWeather(weather: WeatherResponse) {
         dao.delete(weather)
     }
 
     override suspend fun getStoredWeather(): Flow<List<WeatherResponse>> {
       return dao.getFavWeather()
+    }
+
+    override suspend fun insetAlarm(alarm: AlarmEntity) {
+        alarmDao.insertAlarm(alarm)
+    }
+
+    override suspend fun deleteAlarm(alarm: AlarmEntity) {
+      alarmDao.deleteAlarm(alarm)
+    }
+
+    override suspend fun getStoredAlarm(): Flow<List<AlarmEntity>> {
+    return alarmDao.getAlarm()
     }
 }

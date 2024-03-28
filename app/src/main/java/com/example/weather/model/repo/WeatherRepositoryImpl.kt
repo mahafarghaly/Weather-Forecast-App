@@ -1,10 +1,10 @@
 package com.example.weather.model.repo
 
 import com.example.weather.dp.WeatherLocalDataSource
-import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.model.entity.AlarmEntity
+import com.example.weather.model.entity.WeatherResponse
 import com.example.weather.network.WeatherRemoteDataSource
 import com.example.weather.utils.APIKEY
-import com.example.weather.utils.LANGUAGE
 import com.example.weather.utils.UNITS
 import com.example.weather.utils.getLanguageLocale
 import kotlinx.coroutines.flow.Flow
@@ -42,7 +42,7 @@ private var localDataSource: WeatherLocalDataSource
        return localDataSource.getStoredWeather()
     }
 
-    override suspend fun insertWeather(late:Double,long:Double) :WeatherResponse{
+    override suspend fun insertWeather(late:Double,long:Double) : WeatherResponse {
         val weatherResponse = remoteDataSource.getWeatherOverNetwork(late,long, APIKEY, UNITS,
             getLanguageLocale()
         )
@@ -53,6 +53,19 @@ private var localDataSource: WeatherLocalDataSource
     }
 
     override suspend fun deleteWeather(weather: WeatherResponse) {
-       return localDataSource.deleteProduct(weather)
+       return localDataSource.deleteWeather(weather)
+    }
+
+    override suspend fun getStoredAlarm(): Flow<List<AlarmEntity>> {
+     return localDataSource.getStoredAlarm()
+    }
+
+    override suspend fun insertAlarm(late: Double, long: Double, time: Long) {
+
+      return localDataSource.insetAlarm(AlarmEntity(lat = late, lon = long, time = time))
+    }
+
+    override suspend fun deleteAlarm(alarm: AlarmEntity) {
+   return localDataSource.deleteAlarm(alarm)
     }
 }

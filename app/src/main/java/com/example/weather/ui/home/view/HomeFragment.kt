@@ -18,11 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.weather.R
 import com.example.weather.databinding.FragmentHomeBinding
 import com.example.weather.dp.WeatherLocalDataSourceImpl
 import com.example.weather.model.repo.WeatherRepositoryImpl
-import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.model.entity.WeatherResponse
 import com.example.weather.network.ApiState
 import com.example.weather.network.WeatherRemoteDataSourceImpl
 import com.example.weather.ui.favorite.viewmodel.FavViewModel
@@ -78,11 +77,11 @@ class HomeFragment : Fragment() {
         }.build()
         var callback: LocationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                Toast.makeText(
-                    requireContext(),
-                    locationResult.lastLocation.toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
+//                Toast.makeText(
+//                    requireContext(),
+//                    locationResult.lastLocation.toString(),
+//                    Toast.LENGTH_SHORT
+//                ).show()
                 val location = locationResult.lastLocation
                 Log.i(TAG, "latitude : ${location?.latitude}")
                 Log.i(TAG, "longtiude:${location?.longitude} ")

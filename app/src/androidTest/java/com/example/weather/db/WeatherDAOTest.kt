@@ -13,7 +13,7 @@ import com.example.weather.model.weather.Main
 import com.example.weather.model.weather.Sys
 import com.example.weather.model.weather.Weather
 import com.example.weather.model.weather.WeatherItem
-import com.example.weather.model.weather.WeatherResponse
+import com.example.weather.model.entity.WeatherResponse
 import com.example.weather.model.weather.Wind
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

@@ -1,37 +1,43 @@
-package com.example.weather.ui.favorite.view
+package com.example.weather.ui.notifications.view
 
 import android.app.AlertDialog
 import android.content.Context
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
+import com.example.weather.databinding.AlarmItemBinding
 import com.example.weather.databinding.FavoriteItemBinding
+import com.example.weather.model.entity.AlarmEntity
 import com.example.weather.model.entity.WeatherResponse
+import com.example.weather.ui.favorite.view.FavoriteAdapter
+import com.example.weather.ui.favorite.view.OnFavClickListener
 
-class FavoriteAdapter (private val context: Context,private val listener:OnFavClickListener) :
-    RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
-    lateinit var binding: FavoriteItemBinding
-    private var cityList: List<WeatherResponse> = ArrayList<WeatherResponse>()
+class AlarmAdapter (private val context: Context, private val listener: OnAlarmClickListener) :
+    RecyclerView.Adapter<AlarmAdapter.ViewHolder>() {
+    lateinit var binding: AlarmItemBinding
+    private var alarmList: List<AlarmEntity> = ArrayList<AlarmEntity>()
 
-    fun setCityList(dayList:List<WeatherResponse>) {
-        this.cityList = dayList
+    fun setCityList(dayList:List<AlarmEntity>) {
+        this.alarmList = dayList
         notifyDataSetChanged()
+    }
+    fun getAlarmList():List<AlarmEntity>{
+        return alarmList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater: LayoutInflater =parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)as LayoutInflater
-        binding= FavoriteItemBinding.inflate(inflater,parent,false)
+        binding= AlarmItemBinding.inflate(inflater,parent,false)
         return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val city = cityList[position]
+        val alarm = alarmList[position]
 
-        holder.binding.tvCityName.text = city.city.name
+        holder.binding.tvAlarmDate.text =alarm.time.toString()
         holder.binding.ivDelete.setImageResource(R.drawable.delete)
         holder.binding.ivDelete.setOnClickListener {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -43,7 +49,7 @@ class FavoriteAdapter (private val context: Context,private val listener:OnFavCl
 
             dialogView.findViewById<Button>(R.id.btn_yes).setOnClickListener {
                 // Handle positive button click
-                listener.onFavClick(city)
+                listener.onAlarmClick(alarm)
                 dialog.dismiss()
             }
 
@@ -54,21 +60,13 @@ class FavoriteAdapter (private val context: Context,private val listener:OnFavCl
 
             dialog.show()
         }
-//        holder.itemView.setOnClickListener{
+
+        holder.itemView.setOnClickListener{
 //            val bundle = Bundle()
-//            bundle.putString("date", cityList.toString()
-//               // city.city.coord.lat.toString()
-//            ) // Assuming date is a property of WeatherResponse
-//
+//            bundle.putSerializable("weatherResponse", city) // Assuming WeatherResponse implements Serializable
+//            bundle.putString("cityName", city.city.name)
 //            val navController = Navigation.findNavController(holder.itemView)
 //            navController.navigate(R.id.homeFragment, bundle)
-//        }
-        holder.itemView.setOnClickListener{
-            val bundle = Bundle()
-            bundle.putSerializable("weatherResponse", city) // Assuming WeatherResponse implements Serializable
-            bundle.putString("cityName", city.city.name)
-            val navController = Navigation.findNavController(holder.itemView)
-            navController.navigate(R.id.homeFragment, bundle)
         }
 
 
@@ -79,9 +77,9 @@ class FavoriteAdapter (private val context: Context,private val listener:OnFavCl
     }
 
     override fun getItemCount(): Int {
-        return cityList.size
+        return alarmList.size
     }
 
-    class ViewHolder(var binding: FavoriteItemBinding): RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(var binding: AlarmItemBinding): RecyclerView.ViewHolder(binding.root)
 
 }

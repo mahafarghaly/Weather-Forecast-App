@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/notificationsFragment"
-        android:name="com.example.weather.ui.home.view.NotificationsFragment"
+        android:name="com.example.weather.ui.notifications.view.NotificationsFragment"
         android:label="fragment_notifications"
         tools:layout="@layout/fragment_notifications" >
         <action
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.weather.ui.home.view.SettingsFragment"
+        android:name="com.example.weather.ui.settings.view.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>

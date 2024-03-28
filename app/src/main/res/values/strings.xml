@@ -29,4 +29,11 @@
     <string name="fahrenheit">Fahrenheit</string>
     <string name="meterpersecond">m/s</string>
     <string name="milePerHour">ml/hour</string>
+    <string name="places_cancel">Cancel</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="alarm">Alarm</string>
+    <string name="notification">Notification</string>
+    <string name="save">Save</string>
+    <string name="set_alarm">Set Alarm</string>
 </resources>

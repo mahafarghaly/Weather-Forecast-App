@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:background="@drawable/background"
     android:layout_height="match_parent"
-    tools:context=".ui.home.view.SettingsFragment">
+    tools:context=".ui.settings.view.SettingsFragment">
 
     <LinearLayout
         android:id="@+id/linearLayout"
