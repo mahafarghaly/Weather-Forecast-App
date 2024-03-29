@@ -58,6 +58,8 @@ class HomeFragment : Fragment() {
     var cityName: String? = ""
     var clickedItemIndex: Int = 0
     val locationRequestId = 5
+    var lat_setup:Double=0.0
+    var long_setup:Double=0.0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         weatherState = arguments?.getSerializable("weatherResponse") as? WeatherResponse
@@ -65,7 +67,8 @@ class HomeFragment : Fragment() {
         cityName = arguments?.getString("cityName")
         Log.i(TAG, "data from fav:${weatherState?.city?.coord?.lon}")
         Log.i(TAG, "data from fav:${weatherState?.city?.coord?.lat}")
-
+        lat_setup=arguments?.getDouble("lat",0.0)?:0.0
+        long_setup=arguments?.getDouble("long",0.0)?:0.0
         val repository = WeatherRepositoryImpl.getInstance(
             WeatherRemoteDataSourceImpl.getInstance(),
             WeatherLocalDataSourceImpl.getInstance(requireContext())
@@ -86,6 +89,9 @@ class HomeFragment : Fragment() {
                 Log.i(TAG, "latitude : ${location?.latitude}")
                 Log.i(TAG, "longtiude:${location?.longitude} ")
                 location?.let {
+                    if(lat_setup!=0.0&&long_setup!=0.0){
+                        viewModel.getWeather(lat_setup, long_setup)
+                    }
                     viewModel.getWeather(it.latitude, it.longitude)
                 }
                 fusedClient.removeLocationUpdates(this)
@@ -185,6 +191,8 @@ class HomeFragment : Fragment() {
         binding.rvDays.layoutManager = layoutmanager2
         daysAdapter = DaysAdapter(requireContext())
         binding.rvDays.adapter = daysAdapter
+        //
+
         //*****************
         val clickedWeatherItem = weatherState?.list?.getOrNull(clickedItemIndex)
 

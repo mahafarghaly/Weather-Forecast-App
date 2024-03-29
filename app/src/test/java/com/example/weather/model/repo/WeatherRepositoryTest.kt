@@ -1,5 +1,6 @@
 package com.example.weather.model.repo
 
+import com.example.weather.model.entity.AlarmEntity
 import com.example.weather.model.fake.FakeWeatherLocalDataSource
 import com.example.weather.model.fake.FakeWeatherRemoteDataSource
 import com.example.weather.model.weather.City
@@ -93,5 +94,42 @@ class WeatherRepositoryTest {
         assertThat(storedWeather.contains(weatherResponse), `is`(false))
     }
 
+  @Test
+  fun test_storing_alarm_locally()=runBlockingTest {
+      val lat = 0.0
+      val lon = 0.0
+      val time=12345L
+
+      // When
+      val alarmEntity = repository.insertAlarm(lat, lon,time)
+
+      // Then
+      val storedAlarm = repository.getStoredAlarm().first()
+      // assertTrue(storedWeather.contains(weatherResponse))
+      assertThat(
+          storedAlarm.any { it.lat == lat && it.lon == lon && it.time == time },
+          `is`(true))
+  }
+    @Test
+    fun test_deleting_alarm_locally() = runBlockingTest {
+        val lat = 0.0
+        val lon = 0.0
+        val time = 12345L
+
+        // Insert an alarm
+        val alarmEntity = AlarmEntity(0,lat, lon, time)
+        repository.insertAlarm(lat, lon, time)
+
+        // Verify that the alarm is stored
+        var storedAlarm = repository.getStoredAlarm().first()
+        assertThat(storedAlarm.contains(alarmEntity), `is`(true))
+
+        // Delete the alarm
+        repository.deleteAlarm(alarmEntity)
+
+        // Verify that the alarm is deleted
+        storedAlarm = repository.getStoredAlarm().first()
+        assertThat(storedAlarm.contains(alarmEntity), `is`(false))
+    }
 
 }

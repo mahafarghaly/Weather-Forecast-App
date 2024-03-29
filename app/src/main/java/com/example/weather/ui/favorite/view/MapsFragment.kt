@@ -18,6 +18,7 @@ import com.example.weather.model.repo.WeatherRepositoryImpl
 import com.example.weather.network.WeatherRemoteDataSourceImpl
 import com.example.weather.ui.favorite.viewmodel.FavViewModel
 import com.example.weather.ui.favorite.viewmodel.FavViewModelFactory
+import com.example.weather.ui.home.view.HomeFragment
 import com.example.weather.ui.notifications.view.NotificationsFragment
 import com.example.weather.ui.notifications.viewmodel.NotificationViewModel
 import com.example.weather.ui.notifications.viewmodel.NotificationViewModelFactory
@@ -44,6 +45,7 @@ class MapsFragment : Fragment() {
      var latitude:Double=0.0
     var longitude:Double=0.0
     private var selectedTime: Long = 0L
+    private var setup:String=""
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
         map.uiSettings.isZoomControlsEnabled = true
@@ -92,6 +94,8 @@ class MapsFragment : Fragment() {
 //        Log.i(TAG, "onCreateView: time=$selectedTime")
         selectedTime = arguments?.getLong("time", 0L) ?: 0L  // Initialize selectedTime
         Log.i(TAG, "onCreateView: time=$selectedTime")
+        setup=arguments?.getString("source","")?:""
+        Log.i(TAG, "setup: $setup")
         return binding.root
     }
 
@@ -115,7 +119,7 @@ class MapsFragment : Fragment() {
                 Snackbar.LENGTH_INDEFINITE
             )
             snackbar.setAction("Save") {
-        if(selectedTime==0L) {
+        if(selectedTime==0L&&setup=="") {
             favViewModel.addFav(latitude, longitude)
             isSnackbarShown = false
             snackbar.dismiss()
@@ -124,7 +128,21 @@ class MapsFragment : Fragment() {
                 .replace(R.id.fragment_container, favoriteFragment)
                 .addToBackStack(null)
                 .commit()
-        }else{
+        }else if(setup=="setup"){
+            val fragment = HomeFragment().apply {
+                arguments = Bundle().apply {
+                    putDouble("long", longitude)
+                    putDouble("lat", latitude)
+                }
+            }
+            requireActivity().supportFragmentManager.beginTransaction()
+                //fragmentManager?.beginTransaction()
+                ?.replace(R.id.fragment_container, fragment)
+                ?.addToBackStack(null)
+                ?.commit()
+
+        }
+        else {
 
             alarmViewModel.addAlarm(latitude, longitude,selectedTime)
             isSnackbarShown = false

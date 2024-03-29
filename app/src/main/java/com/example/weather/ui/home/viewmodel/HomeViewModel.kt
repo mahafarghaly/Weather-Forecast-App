@@ -13,15 +13,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class HomeViewModel (private val _repo: WeatherRepository) : ViewModel() {
-//    private val _weather = MutableLiveData<WeatherResponse>()
-//    val weather: LiveData<WeatherResponse> get() = _weather
     private val _weather = MutableStateFlow<ApiState>(ApiState.Loading)
     val weather = _weather.asStateFlow()
 fun getWeather(lat: Double, lon: Double) {
-//    viewModelScope.launch {
-//        val weatherList = _repo.getWeather(lat, lon, APIKEY, UNITS, LANGUAGE)
-//        _weather.postValue(weatherList)
-//    }
     viewModelScope.launch {
         _repo.getWeather(lat, lon, APIKEY, UNITS, LANGUAGE)
             .catch { e ->
@@ -33,18 +27,4 @@ fun getWeather(lat: Double, lon: Double) {
     }
 
 }
-//    fun getWeather(lat: Double, lon: Double, isFromFavorite: Boolean = false, favWeatherResponse: WeatherResponse?=null) {
-//        viewModelScope.launch {
-//            if (isFromFavorite && favWeatherResponse != null) {
-//                // Use data from favorite location
-//                _weather.postValue(favWeatherResponse!!)
-//            } else {
-//                // Use data from current location
-//                val weatherList = _repo.getWeather(lat, lon, APIKEY, UNITS, LANGUAGE)
-//                _weather.postValue(weatherList)
-//            }
-//        }
-//    }
-
-
 }

@@ -11,6 +11,7 @@ import com.example.weather.databinding.FragmentSettingsBinding
 import com.example.weather.ui.home.view.HomeActivity
 import com.example.weather.utils.changeLanguageLocaleTo
 import com.example.weather.utils.getLanguageLocale
+import com.example.weather.utils.openMapView
 import com.mad.iti.weather.sharedPreferences.SettingSharedPreferences
 
 
@@ -62,27 +63,35 @@ class SettingsFragment : Fragment() {
             }
         }
         binding.radioGroupLocation.setOnCheckedChangeListener { _, checked ->
-            when (checked) {
+            when(checked){
                 R.id.radio_button_GPS -> {
-                    settingSharedPreferences.setLocationPref(
-                        SettingSharedPreferences.GPS
-                    )
-                    requireActivity().recreate()
-                }
-                R.id.radio_button_map -> {
-                    settingSharedPreferences.setLocationPref(
-                        SettingSharedPreferences.MAP
-                    )
-                    with(Intent(requireContext(), HomeActivity::class.java)) {
-                        putExtra(
-                            SettingSharedPreferences.NAVIGATE_TO_MAP,
-                            SettingSharedPreferences.SET_LOCATION_AS_MAIN_LOCATION
-                        )
-                        startActivity(this)
-                    }
-                }
+                    val intent = Intent(requireContext(), HomeActivity::class.java)
+                    startActivity(intent)
+                }   R.id.radio_button_map -> {
+                openMapView(requireActivity().supportFragmentManager,"setup",30.0,34.0)
+//                    )
             }
-        }
+
+        //            when (checked) {
+//                R.id.radio_button_GPS -> {
+//                    settingSharedPreferences.setLocationPref(
+//                        SettingSharedPreferences.GPS
+//                    )
+//                    requireActivity().recreate()
+//                }
+//                R.id.radio_button_map -> {
+//                    settingSharedPreferences.setLocationPref(
+//                        SettingSharedPreferences.MAP
+//                    )
+//                    with(Intent(requireContext(), HomeActivity::class.java)) {
+//                        putExtra(
+//                            SettingSharedPreferences.NAVIGATE_TO_MAP,
+//                            SettingSharedPreferences.SET_LOCATION_AS_MAIN_LOCATION
+//                        )
+//                        startActivity(this)
+//                    }
+//                }
+        } }
         binding.radioGroupWindSpeed.setOnCheckedChangeListener { _, checked ->
             when (checked) {
                 R.id.radio_button_MPerSec -> settingSharedPreferences.setWindSpeedPref(

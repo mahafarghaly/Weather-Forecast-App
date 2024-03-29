@@ -51,7 +51,7 @@ class WeatherLocalDataSourceTest
     }
 
     @Test
-    fun insertWeather_getStoredProducts_returnsInsertedWeather() = runBlocking {
+    fun insertWeather_getStoredWeather_returnsInsertedWeather() = runBlocking {
         // Given
         val city = City("London", "GB", Coord(0.0, 0.0))
         val main = Main(20.0, 18.0, 15.0, 25.0, 1013, 1013, 1013, 50, 2.0)
