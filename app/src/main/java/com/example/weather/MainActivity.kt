@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         // setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        createNotificationChannel()
+
 
 //        binding.oneTimebtn.setOnClickListener {
 //            scheduleNotification(applicationContext)
@@ -46,37 +46,8 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-    }
+    } }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Notification Channel"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance)
-            val notificationManager =
-                getSystemService(NotificationManager::class.java) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
 
-    private fun scheduleNotification(context: Context) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, NotificationReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            NOTIFICATION_PERM,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
 
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.MINUTE, 1)
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
-    }
-
-    companion object {
-        const val CHANNEL_ID = "CHANNEL_ID"
-        const val NOTIFICATION_PERM = 1023
-    }
-}

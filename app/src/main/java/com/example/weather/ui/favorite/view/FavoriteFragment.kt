@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.example.weather.R
 import com.example.weather.databinding.FragmentFavoriteBinding
 import com.example.weather.dp.WeatherLocalDataSourceImpl
@@ -29,6 +30,7 @@ class FavoriteFragment : Fragment(),OnFavClickListener {
     lateinit var favViewMode:FavViewModel
     lateinit var  favFactory :FavViewModelFactory
     private  val TAG = "FavoriteFragment"
+    private lateinit var lottieAnimationView:LottieAnimationView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val repository = WeatherRepositoryImpl.getInstance(
@@ -44,7 +46,7 @@ class FavoriteFragment : Fragment(),OnFavClickListener {
             favoriteAdapter.setCityList(weatherState)
             Log.i(TAG, "list counts: ${favoriteAdapter.itemCount}")
 
-
+            updateLottieVisibility()
     })
     }
 
@@ -55,32 +57,31 @@ class FavoriteFragment : Fragment(),OnFavClickListener {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         binding.floatingActionButton.setOnClickListener {
             openMapView(requireActivity().supportFragmentManager,"favorite",-34.0, 151.0)
+            lottieAnimationView.visibility = View.GONE
         }
         layoutManager= LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false)
        binding.rvFavorite.layoutManager=layoutManager
         favoriteAdapter= FavoriteAdapter(requireContext(),this)
         binding.rvFavorite.adapter=favoriteAdapter
+        lottieAnimationView = binding.lottieAnimationView
+       lottieAnimationView.playAnimation()
+        updateLottieVisibility()
         return binding.root
 
     }
 
 
-//    private fun openMapView(long: Double, land: Double) {
-//        val fragment = MapsFragment().apply {
-//            arguments = Bundle().apply {
-//                putDouble("long", long)
-//                putDouble("land", land)
-//            }
-//        }
-//        requireActivity().supportFragmentManager.beginTransaction()
-//        .replace(R.id.fragment_container, fragment)
-//        .addToBackStack(null)
-//        .commit()
-//    }
 
     override fun onFavClick(fav: WeatherResponse?) {
         fav?.let { favViewMode.deleteFav(it) }
         Toast.makeText(requireContext(), " removed from favorite", Toast.LENGTH_SHORT).show()
 
+    }
+    private fun updateLottieVisibility() {
+        if (favoriteAdapter.itemCount > 0) {
+            lottieAnimationView.visibility = View.GONE
+        } else {
+            lottieAnimationView.visibility = View.VISIBLE
+        }
     }
     }

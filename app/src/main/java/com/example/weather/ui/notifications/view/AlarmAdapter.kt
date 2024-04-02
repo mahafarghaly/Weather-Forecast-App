@@ -2,6 +2,7 @@ package com.example.weather.ui.notifications.view
 
 import android.app.AlertDialog
 import android.content.Context
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
@@ -14,6 +15,7 @@ import com.example.weather.model.entity.AlarmEntity
 import com.example.weather.model.entity.WeatherResponse
 import com.example.weather.ui.favorite.view.FavoriteAdapter
 import com.example.weather.ui.favorite.view.OnFavClickListener
+import java.sql.Date
 
 class AlarmAdapter (private val context: Context, private val listener: OnAlarmClickListener) :
     RecyclerView.Adapter<AlarmAdapter.ViewHolder>() {
@@ -36,8 +38,8 @@ class AlarmAdapter (private val context: Context, private val listener: OnAlarmC
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val alarm = alarmList[position]
-
-        holder.binding.tvAlarmDate.text =alarm.time.toString()
+        val alertTime = alarm.time
+        holder.binding.tvAlarmDate.text = convertTimeInMillisToDate(context, alertTime)         //alarm.time.toString()
         holder.binding.ivDelete.setImageResource(R.drawable.delete)
         holder.binding.ivDelete.setOnClickListener {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -60,20 +62,6 @@ class AlarmAdapter (private val context: Context, private val listener: OnAlarmC
 
             dialog.show()
         }
-
-        holder.itemView.setOnClickListener{
-//            val bundle = Bundle()
-//            bundle.putSerializable("weatherResponse", city) // Assuming WeatherResponse implements Serializable
-//            bundle.putString("cityName", city.city.name)
-//            val navController = Navigation.findNavController(holder.itemView)
-//            navController.navigate(R.id.homeFragment, bundle)
-        }
-
-
-
-
-
-
     }
 
     override fun getItemCount(): Int {
@@ -81,5 +69,15 @@ class AlarmAdapter (private val context: Context, private val listener: OnAlarmC
     }
 
     class ViewHolder(var binding: AlarmItemBinding): RecyclerView.ViewHolder(binding.root)
+    fun convertTimeInMillisToDate(context: Context, timeInMillis: Long): String {
+        val dateFormat = DateFormat.getDateFormat(context)
+        val timeFormat = DateFormat.getTimeFormat(context)
 
+        val date = Date(timeInMillis)
+
+        val dateString = dateFormat.format(date)
+        val timeString = timeFormat.format(date)
+
+        return "$dateString $timeString"
+    }
 }

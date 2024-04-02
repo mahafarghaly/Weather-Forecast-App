@@ -17,17 +17,11 @@ import com.example.weather.ui.home.viewmodel.HomeViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : AppCompatActivity() {
-    private lateinit var homeFactory: HomeViewModelFactory
-    private lateinit var viewModel: HomeViewModel
     private val TAG = "HomeActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        val repository = WeatherRepositoryImpl.getInstance(
-            WeatherRemoteDataSourceImpl.getInstance(),
-            WeatherLocalDataSourceImpl.getInstance(this)
 
-        )
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         bottomNav.setOnNavigationItemSelectedListener { item ->

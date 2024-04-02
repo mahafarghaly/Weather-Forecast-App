@@ -1,4 +1,4 @@
-package com.example.weather.ui.favorite.view
+package com.example.weather.ui
 
 import android.content.res.ColorStateList
 import android.location.Geocoder
@@ -16,6 +16,7 @@ import com.example.weather.databinding.FragmentMapsBinding
 import com.example.weather.dp.WeatherLocalDataSourceImpl
 import com.example.weather.model.repo.WeatherRepositoryImpl
 import com.example.weather.network.WeatherRemoteDataSourceImpl
+import com.example.weather.ui.favorite.view.FavoriteFragment
 import com.example.weather.ui.favorite.viewmodel.FavViewModel
 import com.example.weather.ui.favorite.viewmodel.FavViewModelFactory
 import com.example.weather.ui.home.view.HomeFragment
@@ -46,6 +47,7 @@ class MapsFragment : Fragment() {
     var longitude:Double=0.0
     private var selectedTime: Long = 0L
     private var setup:String=""
+    private var setting:String=""
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
         map.uiSettings.isZoomControlsEnabled = true
@@ -96,6 +98,7 @@ class MapsFragment : Fragment() {
         Log.i(TAG, "onCreateView: time=$selectedTime")
         setup=arguments?.getString("source","")?:""
         Log.i(TAG, "setup: $setup")
+        setting=arguments?.getString("source","")?:""
         return binding.root
     }
 
@@ -119,7 +122,7 @@ class MapsFragment : Fragment() {
                 Snackbar.LENGTH_INDEFINITE
             )
             snackbar.setAction("Save") {
-        if(selectedTime==0L&&setup=="") {
+        if(selectedTime==0L&&setting!="setting"&&setup!="setup") {
             favViewModel.addFav(latitude, longitude)
             isSnackbarShown = false
             snackbar.dismiss()
@@ -128,7 +131,7 @@ class MapsFragment : Fragment() {
                 .replace(R.id.fragment_container, favoriteFragment)
                 .addToBackStack(null)
                 .commit()
-        }else if(setup=="setup"){
+        }else if((setup=="setup"||setting=="setting")&&selectedTime==0L){
             val fragment = HomeFragment().apply {
                 arguments = Bundle().apply {
                     putDouble("long", longitude)
@@ -142,12 +145,18 @@ class MapsFragment : Fragment() {
                 ?.commit()
 
         }
-        else {
+        else if(selectedTime>0L) {
 
             alarmViewModel.addAlarm(latitude, longitude,selectedTime)
             isSnackbarShown = false
             snackbar.dismiss()
-            val alarmFragment = NotificationsFragment()
+            val alarmFragment = NotificationsFragment().apply {
+                arguments = Bundle().apply {
+                    putDouble("long", longitude)
+                    putDouble("lat", latitude)
+                }
+            }
+
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, alarmFragment)
                 .addToBackStack(null)

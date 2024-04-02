@@ -44,10 +44,6 @@ class DayHourAdapter (private val context: Context) :
             day.main.temp_min.roundToInt(),
             holder.itemView.context
         )
-//                    Glide.with(context)
-//                .load("https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png")
-//
-//                .into(binding.ivState)
         val icon= getWeatherIconResourceId(day.weather[0].icon)
         Glide.with(  holder.itemView.context)
             .load(icon)

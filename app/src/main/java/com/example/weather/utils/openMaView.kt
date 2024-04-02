@@ -3,7 +3,7 @@ package com.example.weather.utils
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import com.example.weather.R
-import com.example.weather.ui.favorite.view.MapsFragment
+import com.example.weather.ui.MapsFragment
 
  fun openMapView(fragmentManager: FragmentManager, source: String,long: Double, land: Double) {
     val fragment = MapsFragment().apply {

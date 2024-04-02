@@ -42,30 +42,19 @@ class FavoriteAdapter (private val context: Context,private val listener:OnFavCl
                 .create()
 
             dialogView.findViewById<Button>(R.id.btn_yes).setOnClickListener {
-                // Handle positive button click
                 listener.onFavClick(city)
                 dialog.dismiss()
             }
 
             dialogView.findViewById<Button>(R.id.btn_no).setOnClickListener {
-                // Handle negative button click
                 dialog.dismiss()
             }
 
             dialog.show()
         }
-//        holder.itemView.setOnClickListener{
-//            val bundle = Bundle()
-//            bundle.putString("date", cityList.toString()
-//               // city.city.coord.lat.toString()
-//            ) // Assuming date is a property of WeatherResponse
-//
-//            val navController = Navigation.findNavController(holder.itemView)
-//            navController.navigate(R.id.homeFragment, bundle)
-//        }
         holder.itemView.setOnClickListener{
             val bundle = Bundle()
-            bundle.putSerializable("weatherResponse", city) // Assuming WeatherResponse implements Serializable
+            bundle.putSerializable("weatherResponse", city)
             bundle.putString("cityName", city.city.name)
             val navController = Navigation.findNavController(holder.itemView)
             navController.navigate(R.id.homeFragment, bundle)

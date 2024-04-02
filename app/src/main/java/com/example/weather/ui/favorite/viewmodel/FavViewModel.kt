@@ -21,7 +21,7 @@ init {
         viewModelScope.launch {
             try {
                 _repo.insertWeather(lat, lon)
-                getStoredWeather() // Reload the weather list after insertion
+                getStoredWeather()
             } catch (e: Exception) {
                 println(e)
             }

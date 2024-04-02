@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/background"
     android:scrollbarAlwaysDrawHorizontalTrack="false"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
     tools:context=".ui.home.view.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="22"
+            android:text="0"
             android:textAlignment="center"
             android:textSize="80sp"
             app:layout_constraintEnd_toEndOf="@+id/iv_weather"
@@ -116,11 +115,11 @@
 
                 <ImageView
                     android:id="@+id/iv_pressure"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="16dp"
-                    android:src="@drawable/dfewclouds"
+                    android:src="@drawable/pressure"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -139,12 +138,12 @@
                     android:id="@+id/tv_hum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
+
+                    android:layout_marginStart="10dp"
 
                     android:text="TextView"
-
                     app:layout_constraintEnd_toEndOf="@+id/iv_hum"
-                    app:layout_constraintHorizontal_bias="0.222"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/iv_hum"
                     app:layout_constraintTop_toBottomOf="@+id/iv_hum" />
 
@@ -154,9 +153,9 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="50dp"
                     android:layout_marginTop="16dp"
-                    android:src="@drawable/dfewclouds"
+                    android:src="@drawable/humidity_percentage"
                     app:layout_constraintEnd_toStartOf="@+id/iv_wind"
-                    app:layout_constraintHorizontal_bias="0.312"
+                    app:layout_constraintHorizontal_bias="0.289"
                     app:layout_constraintStart_toEndOf="@+id/iv_pressure"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -174,12 +173,12 @@
 
                 <ImageView
                     android:id="@+id/iv_wind"
-                    android:layout_width="40dp"
+                    android:layout_width="35dp"
                     android:layout_height="40dp"
 
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="20dp"
-                    android:src="@drawable/dfewclouds"
+                    android:src="@drawable/air_"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -190,7 +189,7 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="28dp"
-                    android:src="@drawable/dfewclouds"
+                    android:src="@drawable/cloud"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_pressure" />
 
@@ -226,12 +225,12 @@
                 <ImageView
                     android:id="@+id/iv_sea"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_height="30dp"
                     android:layout_marginStart="50dp"
-                    android:layout_marginTop="28dp"
-                    android:src="@drawable/dfewclouds"
+                    android:layout_marginTop="36dp"
+                    android:src="@drawable/below_sea_level"
                     app:layout_constraintEnd_toStartOf="@+id/iv_wind"
-                    app:layout_constraintHorizontal_bias="0.214"
+                    app:layout_constraintHorizontal_bias="0.314"
                     app:layout_constraintStart_toEndOf="@+id/iv_pressure"
                     app:layout_constraintTop_toBottomOf="@+id/tv_hum" />
 
@@ -242,7 +241,7 @@
 
                     android:layout_marginTop="28dp"
                     android:layout_marginEnd="20dp"
-                    android:src="@drawable/dfewclouds"
+                    android:src="@drawable/visibilit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_wind" />
 
@@ -335,6 +334,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.512"
             app:layout_constraintStart_toStartOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

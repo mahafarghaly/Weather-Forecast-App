@@ -20,10 +20,6 @@ class DaysAdapter(private val context: Context) :
     lateinit var binding: DayItemBinding
     private var dayList: List<WeatherItem> = ArrayList<WeatherItem>()
 
-//    fun setDayList(dayList: List<WeatherItem>) {
-//        this.dayList = dayList.drop(8)
-//        notifyDataSetChanged()
-//    }
 fun setDayList(dayList: List<WeatherItem>) {
     this.dayList = getFirstItemOfDay(dayList).drop(1)
     notifyDataSetChanged()
@@ -54,22 +50,14 @@ fun setDayList(dayList: List<WeatherItem>) {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val day = dayList[position]
 
-//        var time= day.dt_txt
-//            .split(" ")[1].substring(0, 5)
-//        holder.binding.tvDayName.text=day.dt_txt.substring(0, 10)
         val dayName = convertToDayName(day.dt_txt.substring(0, 10))
         holder.binding.tvDayName.text = dayName
         holder.binding.tvWeatherState.text = day.weather[0].description
-            //day.main.temp_min.toInt().toString()+"°C"
         holder.binding.tvTempDay.setTemp(
             day.main.temp_min.roundToInt(),
             holder.itemView.context
         )
 
-//        Glide.with(context)
-//            .load("https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png")
-//
-//            .into(binding.ivDayState)
         val icon= getWeatherIconResourceId(day.weather[0].icon)
         Glide.with(  holder.itemView.context)
             .load(icon)
@@ -85,12 +73,6 @@ fun setDayList(dayList: List<WeatherItem>) {
     }
 
     class ViewHolder(var binding: DayItemBinding): RecyclerView.ViewHolder(binding.root)
-//    fun convertTo12HourFormat(time24: String): String {
-//        val inputFormat = SimpleDateFormat("HH", Locale.getDefault())
-//        val outputFormat = SimpleDateFormat("hh a", Locale.getDefault())
-//        val date = inputFormat.parse(time24)
-//        return outputFormat.format(date)
-//    }
 
     fun convertToDayName(dateString: String): String {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())

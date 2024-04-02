@@ -17,7 +17,7 @@
             android:id="@+id/iv_day_state"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginStart="48dp"
+            android:layout_marginStart="36dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_day_name"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,6 +30,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="day"
+
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_day_state"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/iv_day_state"
@@ -39,21 +41,25 @@
             android:id="@+id/tv_weather_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="56dp"
+            android:layout_marginStart="16dp"
             android:text="weather state"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_day_state"
             app:layout_constraintStart_toEndOf="@+id/iv_day_state"
             app:layout_constraintTop_toTopOf="@+id/iv_day_state"
-            app:layout_constraintVertical_bias="0.483" />
+            app:layout_constraintVertical_bias="0.478" />
 
         <TextView
             android:id="@+id/tv_temp_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
             android:text="0/0"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_weather_state"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.786"
+            app:layout_constraintHorizontal_bias="0.646"
             app:layout_constraintStart_toEndOf="@+id/tv_weather_state"
             app:layout_constraintTop_toTopOf="@+id/tv_weather_state"
             app:layout_constraintVertical_bias="0.0" />
