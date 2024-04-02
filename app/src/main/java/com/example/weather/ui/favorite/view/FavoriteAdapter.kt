@@ -27,7 +27,6 @@ class FavoriteAdapter (private val context: Context,private val listener:OnFavCl
         binding= FavoriteItemBinding.inflate(inflater,parent,false)
         return ViewHolder(binding)
     }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val city = cityList[position]
 
@@ -59,18 +58,11 @@ class FavoriteAdapter (private val context: Context,private val listener:OnFavCl
             val navController = Navigation.findNavController(holder.itemView)
             navController.navigate(R.id.homeFragment, bundle)
         }
-
-
-
-
-
-
     }
 
     override fun getItemCount(): Int {
         return cityList.size
     }
-
     class ViewHolder(var binding: FavoriteItemBinding): RecyclerView.ViewHolder(binding.root)
 
 }

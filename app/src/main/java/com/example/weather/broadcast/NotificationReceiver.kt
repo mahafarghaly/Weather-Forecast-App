@@ -81,10 +81,6 @@ class NotificationReceiver : BroadcastReceiver() {
         response: WeatherResponse
     ): NotificationCompat.Builder {
         val intent = Intent(context, HomeActivity::class.java)
-//            .apply {
-//            putExtra("lat", late)
-//            putExtra("long", long)
-//        }
         val pendingIntent = PendingIntent.getActivity(
             context,
             0,

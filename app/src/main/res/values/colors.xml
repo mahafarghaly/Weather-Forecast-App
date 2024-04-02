@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="purple">#783CE3</color>
+    <color name="iconsColor">#352163</color>
     <color name="purple_light">#AA82F1</color>
     <color name="colorPrimary">#352163</color>
     <color name="colorPrimaryLight">#331972</color>

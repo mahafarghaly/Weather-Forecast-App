@@ -226,18 +226,14 @@ class NotificationsFragment : Fragment(),OnAlarmClickListener{
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra("alarm_time", timeMillis)
-
         }
-
         val requestCode = timeMillis.toInt()
-
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             requestCode,
             intent,
             PendingIntent.FLAG_IMMUTABLE
         )
-
         alarmManager.set(AlarmManager.RTC_WAKEUP, timeMillis, pendingIntent)
     }
     private fun updateLottieVisibility() {
